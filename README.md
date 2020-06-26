@@ -7,4 +7,5 @@ Intelligent inspection like idiot does
 ## 2020-06-26 2nd
 Location: Chuangzhitiandi
 
-Learning Django 2.2 together
+- Learning Django 2.2 together
+- setup docker environment
