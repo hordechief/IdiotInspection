@@ -1,0 +1,3 @@
+gunicorn
+django==2.2
+djangorestframework
