@@ -1,2 +1,32 @@
-gunicorn ii.wsgi:application --bind 0.0.0.0:8000
+apt-get install iputils-ping
 
+# mysql
+service mysql start
+
+# phpmyadmin
+Step 1: Install Phpmyadmin (Optional)
+In this case, phpmyadmin may come handy to you. Alternatively, you may access MySQL
+database from the command line. The instructions are available here.
+In most cases, the following commands will work for you.
+sudo apt-get install phpmyadmin
+sudo ln -s /etc/phpmyadmin/apache.conf /etc/apache2/conf-available/phpmyadmin.conf
+sudo a2enconf phpmyadmin
+sudo /etc/init.d/apache2 reload
+Then you can access the HSS database via http://127.0.0.1/phpmyadmin/ with username "hssadmin" and password "admin".
+
+service apache2 start
+
+# python-mysql
+go to https://www.lfd.uci.edu/~gohlke/pythonlibs/#mysqlclient
+
+sudo apt install libmysqlclient-dev # without this line, it report OSError: mysql_config not found
+pip3 install mysqlclient
+
+# env
+export DATABASE="mysql"
+printenv DATABASE
+
+/etc/environment
+
+# start application
+gunicorn ii.wsgi:application --bind 0.0.0.0:8000
