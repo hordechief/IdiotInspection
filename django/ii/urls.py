@@ -45,10 +45,12 @@ from equipments.api.views import EquipmentViewSet
 router.register(r'equips', EquipmentViewSet)
 
 urlpatterns = [
-    path(r'equip/', include('equipments.api.urls')),
     path('admin/', admin.site.urls),
     path('', include(router.urls)),
-    path('api-auth/', include('rest_framework.urls', namespace='rest_framework'))
+    path('api-auth/', include('rest_framework.urls', namespace='rest_framework')),
+    path(r'equip/', include('equipments.urls')),
+    # path(r'inspection/', include('inspection.urls')),
+
 ]
 
 urlpatterns += staticfiles_urlpatterns()

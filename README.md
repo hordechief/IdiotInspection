@@ -9,3 +9,15 @@ Location: Chuangzhitiandi
 
 - Learning Django 2.2 together
 - setup docker environment
+
+# Development Plan
+- DailyInspection Application
+    - Models
+    - CRDU
+        - Plugin
+    - DRF API
+- Multiple Tenant
+    - Switch to PostgreSQL
+    - Multiple Tenant
+    - RBAC
+    - Registration

@@ -6,5 +6,5 @@ from equipments.api.views import (EquipmentViewSet, ListEquipments)
 from django.urls import path, include
 
 urlpatterns = [
-    path('api/', ListEquipments.as_view(),)
+    path('list/', ListEquipments.as_view(),)
 ]
