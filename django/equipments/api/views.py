@@ -2,8 +2,10 @@ from rest_framework import viewsets
 from .serializers import EquipmentSerializer
 from equipments.models import Equipment
 from rest_framework.views import APIView
+from rest_framework.generics import ListAPIView
+from rest_framework.response import Response
 
-class ListEquipments(APIView):
+class ListEquipments(ListAPIView):
     """
     View to list all users in the system.
 
@@ -12,12 +14,14 @@ class ListEquipments(APIView):
     """
     #authentication_classes = [authentication.TokenAuthentication]
     #permission_classes = [permissions.IsAdminUser]
+    
+    def get_queryset(self):
+        return Equipment.objects.all()
 
     def get(self, request, format=None):
-        ii
         equips = Equipment.objects.all()
         serializer = EquipmentSerializer(equips, many=True)
-        return response(serializer.data)
+        return Response(serializer.data)
         """
         Return a list of all equipments.
         """
