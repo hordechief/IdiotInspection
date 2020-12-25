@@ -1,0 +1,63 @@
+{% load staticfiles %}
+{% load i18n %}
+{# load langs #}
+
+    <!-- Static navbar -->
+    <nav class="navbar navbar-default navbar-static-top">
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" style="color:#428bca;" href="">IdiotInspection</a>
+        </div>
+        <div id="navbar" class="navbar-collapse collapse">
+          <ul class="nav navbar-nav">
+            <li class="active"><a href="">{% trans 'Home' %}</a></li>    
+            <li><a href="">{% trans 'About' %}</a></li>
+            {% if request.user.is_authenticated and request.user.is_staff %}
+            <li><a href="">{% trans 'Admin' %}</a></li>
+            {% endif %}
+          </ul>
+
+          <ul class="nav navbar-nav navbar-right">
+            <li><a href=''><i class="fa fa-hand-o-up fa-navbar-cart"></i> <span id="cart-count-badge" class='badge'>{% if request.user.is_authenticated %}{{request.session.cart_item_count}}{% else %}0{% endif %}</span></a></li>   
+            {% if request.user.is_authenticated %}              
+              {% if request.user.is_wechatuser %}
+              <li><a href=''}>{{request.user.get_wechatprofile}}</a></li> 
+              <li><a href="">{% trans 'Logout' %}</a></li>              
+              {% else %}
+              <li><a href="">{{request.user}}</a></li> 
+              <li><a href="">{% trans 'Logout' %}</a></li>
+              {% endif %}        
+            {% else %}
+              {% if not request.user.is_authenticated and not "/accounts/login" in request.get_full_path %}
+              <li class="dropdown">
+                <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">{% trans 'Login' %} <span class="caret"></span></a>
+                <ul class="dropdown-menu" role="menu">
+                  <!-- <form class='navbar-form' method='POST' action='{% url "auth_login" %}'>{% csrf_token %} -->
+                  <form class='navbar-form' method='POST' action='{% url "login" %}'>{% csrf_token %}
+                    <div class='form-group'>
+                        <input type='text' class='form-control' name='username' placeholder='Username' /> 
+                    </div>
+                    <div class='form-group'>
+                        <input type='password' class='form-control' name='password' placeholder='Password' />
+                    </div>
+                    <button type='submit' class='btn btn-default btn-block'>{% trans 'Log in' %}</button>
+                    <input type="hidden" name="next" value="" /> <!-- add for redirection -->
+                  </form>
+                </ul>
+              </li>
+              {% endif %}            
+              <!-- <li><a href="{% url 'auth_login' %}">Login</a></li> -->
+            {% endif %}
+            <!--<li><a href="#">Settings</a></li>-->
+            {# language_select LANGUAGE_CODE request #}
+          </ul>
+
+        </div><!--/.nav-collapse -->
+      </div>
+    </nav>

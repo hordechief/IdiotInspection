@@ -1,0 +1,31 @@
+{% load i18n %}
+{% load myform %}
+{% load pagination_tags %}
+
+<!-- parameters:
+	title
+	object_foreign_set
+	fields_foreign
+	fields_foreign_display
+	field_display_links
+	table_class
+	thead_class
+	page_num  - not work for RelatedObjects
+	
+-->
+
+{% if plain_table %}
+<h3 class="table-title">{% trans title %}</h3>
+{% include "includes/list_content.html" with table_class="table-align-center" thead_class="table-primary" fields=fields_foreign object_list=object_foreign_set page_num=0 fields_display=fields_foreign_display  %}
+{% else %}
+<div class="panel panel-primary">
+    <div class="panel-heading">
+        <h3 class="panel-title">
+            {% trans title %}
+        </h3>
+    </div>
+    <div class="panel-body">
+        {% include "includes/list_content.html" with table_class=" " thead_class="table-primary-light" fields=fields_foreign object_list=object_foreign_set page_num=0 fields_display=fields_foreign_display  %}
+    </div>
+</div>  
+{% endif %}

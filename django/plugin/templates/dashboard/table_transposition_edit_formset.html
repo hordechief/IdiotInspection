@@ -1,0 +1,75 @@
+{% load i18n %}
+{% load myform %}
+
+<!--
+	formset
+	
+	project_name
+	columns
+	rows_fields
+-->
+
+<div style="overflow-x:auto; ">
+    <form method="post" action="">{% csrf_token %}
+        {{ formset.management_form }}
+
+        {% if formset.errors %}
+            <div class="errornote" style="color: #b75f33;">{{formset.non_form_errors}}</div>
+        {% endif %}
+
+        <table class="table-formset table table-bordered table-hover table-striped table-container table-condensed" >
+            <thead>
+                <tr  class="table-primary">
+                    <th>{% trans project_name %}</th>
+                    {% for column in columns %}
+                    <th>{{column.1}}</th>
+                    {% endfor %}
+                </tr>
+            </thead>
+            <tbody>
+                {% for field_0 in rows_fields %}
+                <tr style="{% if field_0.name in hidden_fields %}display:none; {% endif %}"> <!-- without this, there will be field missing error, especially ID -->
+                    <th>{{field_0.label_tag}}</th>
+                    {% for column in columns %}
+                        <td class="{% if field_0.name in date_field_list %}calenda{% endif %}" >                              
+                            {% for form in formset %} 
+                                {% if form.instance|my_get_field_value:column_key == column.0 %} 
+                                    {% for field in form %} 
+                                        {% if field.name == field_0.name %}
+                                            {% if field.is_readonly %}
+                                                {{ field.contents }}
+                                            {% else %}
+                                                {% if field_0.name == column_key %}
+                                                    {% if form.errors %}
+                                                        <div class="error" style="color: #b75f33;">{{form.non_field_errors}}</div>
+                                                    {% endif %}
+                                                    {{form.instance|my_get_field_display:field.name}}  
+                                                    <span style="display: none">{{field}}</span>  <!-- without this, there will be field missing error -->
+                                                {% else %}
+                                                    {% if field.errors %}<div class="error" style="color:#b75f33">{{ field.errors }}</div>{% endif %}
+                                                    <span style="display: none">{{field.label_tag}}</span>
+                                                    {{field}}
+                                                {% endif %}                                                                                                                               
+                                            {% endif %}
+                                        {% endif %}
+                                    {% endfor %} 
+                                {% endif %}
+                            {% endfor %}
+                        </td>
+                    {% endfor %}
+
+                    {% comment %}
+                    <td><span style="display: none">{{formset.0.voltage_and_power_normal.label_tag}}</span>{{formset.0.voltage_and_power_normal}}
+                    <input id="id_form-0-id" name="form-0-id" type="hidden" value="1"></td>
+                    <td><span style="display: none">{{formset.1.voltage_and_power_normal.label_tag}}</span>{{formset.1.voltage_and_power_normal}}
+                    <input id="id_form-1-id" name="form-1-id" type="hidden" value="2"></td>
+                    {% endcomment %}
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        <input type="submit" class="btn btn-primary" value="{% trans 'Submit' %}" style="{% if not formset or not formset|length %}display: none;{% endif %}">
+    </form>    
+</div>
+
+<!-- param : project_name,  columns, date_field_list -->

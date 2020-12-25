@@ -36,9 +36,18 @@ INSTALLED_APPS = [
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
+    'django.contrib.sites',    
     'django.contrib.staticfiles',
     'rest_framework',
+    'chartjs',
+    'crispy_forms',
+    'registration',
+    'dj_pagination',    
     'equipments',
+    'daily_inspection',
+    'plugin',    
+    # 'breadcrumbs',
+    # 'authwrapper',
 ]
 
 MIDDLEWARE = [
@@ -49,6 +58,8 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'dj_pagination.middleware.PaginationMiddleware',
+    # 'breadcrumbs.middleware.BreadcrumbsMiddleware',
 ]
 
 ROOT_URLCONF = 'ii.urls'
@@ -56,7 +67,7 @@ ROOT_URLCONF = 'ii.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [os.path.join(BASE_DIR, "templates"), ],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -132,6 +143,12 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 STATIC_ROOT = os.path.join(os.path.dirname(BASE_DIR), "static_in_env", "static_root")
+STATICFILES_DIRS = (
+    os.path.join(BASE_DIR, "static_in_pro", "our_static"),
+)
+
+MEDIA_URL = '/media/'
+MEDIA_ROOT = os.path.join(os.path.dirname(BASE_DIR), "static_in_env", "media_root")   
 
 REST_FRAMEWORK = {
     # Use Django's standard `django.contrib.auth` permissions,
@@ -140,3 +157,15 @@ REST_FRAMEWORK = {
         'rest_framework.permissions.DjangoModelPermissionsOrAnonReadOnly'
     ]
 }
+
+# from django.contrib.auth.models import User
+
+# AUTH_USER_MODEL = 'django.contrib.auth.User' #'authwrapper.MyUser'
+
+SITE_ID = 1
+
+#Crispy FORM TAGs SETTINGS
+CRISPY_TEMPLATE_PACK = 'bootstrap3'
+
+UUSLUGIFY = True
+USE_SAE_BUCKET = False

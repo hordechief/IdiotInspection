@@ -1,0 +1,11 @@
+{% if is_initial %}
+    {{ initial_text }}: <a href="{{ widget.value.url }}"><img src="{% if widget.value.thumb_url %}{{widget.value.thumb_url}}{% else %}{{widget.value.url}}{% endif %}" alt="{{widget.value}}" style="max-width: 200px; max-height: 200px; border-radius: 5px;" /></a><br/>
+    {% if not widget.required %}
+        <input type="checkbox" name="{{ checkbox_name }}" id="{{ checkbox_id }}" />
+        <label for="{{ checkbox_id }}">{{ clear_checkbox_label }}</label>
+    {% endif %}<br />
+    {{ input_text }}:
+{% endif %}
+
+<input type="{{ widget.type }}" name="{{ widget.name }}"
+{% include "django/forms/widgets/attrs.html" %} />

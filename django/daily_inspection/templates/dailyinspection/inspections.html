@@ -1,0 +1,20 @@
+
+<div class='row'>
+
+	{% for inspection in object_list %}
+		<div class='col-xs-12 col-sm-3 {{col_class_set}}' style="margin-top: 5px;">
+			{% include "dailyinspection/inspection_thumbnail.html" with inspection=inspection %}
+		</div>
+		{% if not col_class_set %}
+		{% cycle '' '' '' '</div><div class="row">'%} <!-- if not set additional class, then it will float dynamically every 4 -->
+		{% endif %}	
+	{% endfor %}
+
+</div>
+
+<!--
+.col-xs- 超小屏幕 手机 (<768px)
+.col-sm- 小屏幕 平板 (≥768px)
+.col-md- 中等屏幕 桌面显示器 (≥992px)
+.col-lg- 大屏幕 大桌面显示器 (≥1200px)
+-->

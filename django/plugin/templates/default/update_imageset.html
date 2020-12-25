@@ -1,0 +1,88 @@
+{% extends "default/update.html" %}
+{% load i18n %}
+{% load crispy_forms_tags %}
+
+<style type="text/css">
+{% block style %}
+
+{{block.super}}
+
+div.formset label:nth-child(1){
+    display: none!important;
+}
+
+div.formset input[type='file']{
+    /*background-color:red;*/
+}
+
+.form-border{
+    border: solid 1px #f5f5f5; 
+    /*border-left:none;*/
+    padding:10px; 
+    margin-bottom: 5px;
+}
+
+
+{% endblock %}
+</style>
+
+{% block content %}
+<form enctype="multipart/form-data" method="POST" action="">{% csrf_token %}              
+<div class="row">    
+    <div class="col-sm-6">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h3 class="panel-title">
+                    {% trans "Base Information" %}
+                </h3>
+            </div>
+            <div class="panel-body">    
+                {{title}}
+                <hr>
+                {{form|crispy}}          
+            </div>
+        </div>
+    </div>
+
+    <div class="col-sm-6">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h3 class="panel-title">
+                    {{item_name}}
+                </h3>
+            </div>
+            <div class="panel-body">            
+                {{ formset.management_form }}
+                <div class="row formset">
+                    {% for form in formset %}
+                        {% if not form.instance.pk %}
+                        <div class="col-sm-12" style="clear: both;">
+                            <h3>{% trans "Create New Item" %}<small style="color:#428bca;">{{item_name}}</small></h3>
+                            {{form}} 
+                        </div>
+                        {% else %}
+                        <div class="col-sm-6">
+                            <div class="form-border">
+                            {{form}} 
+                            </div>
+                        </div>                    
+                        {% endif %}
+                        {% cycle '' '</div><div class="row formset">'%}
+                    {% endfor %}
+                </div>    
+            </div>
+        </div>
+    </div>    
+</div>  
+<div class="row">
+    <div class="col-sm-12">
+        <input type="submit" class="btn btn-primary"  name="submit" value = "{% trans 'Submit' %}">
+         {% if back_url %}<a href="{{back_url}}" class="btn btn-default">{% trans "back" %}</a>{% endif %}        
+    </div>
+</div>
+</form>
+
+{% endblock%}
+
+
+

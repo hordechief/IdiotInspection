@@ -1,0 +1,480 @@
+
+.text-align-center {
+	text-align: center;
+}
+
+
+/* product */
+.og-price {
+	color:red;
+	text-decoration:line-through;
+}
+
+.fa-navbar-cart{
+	font-size: 18px;
+    vertical-align: middle;
+}
+
+.container-alert-flash {
+    position: absolute;
+    top: 10px;
+    z-index: 50000;
+    width: 100%;
+    right: 0%;
+    margin: 0px;
+    display:none;
+}
+
+
+
+/* overwrite row css */
+.container-fluid .row{
+    margin-right: 0px;
+    margin-left: 0px;
+}
+
+a:link {text-decoration: none;}
+a:visited {text-decoration: none;}
+a:active {text-decoration: none;}
+a:hover {text-decoration: none;}
+
+
+.beta {
+    background: linear-gradient(#f2dede, #c09853);
+    padding: 10px 10px;
+    border-radius: 5px;
+    color:white;
+}
+
+/*******************  
+
+           message
+           
+*********************/
+div.alert div.error{
+	color:red!important;
+}
+
+/*******************  
+
+           table style div
+           
+*********************/
+
+.div-table-header{
+    padding: 10px 0 10px;
+    background: linear-gradient(rgba(124, 152, 177, 0.88), #428bca);
+    color:white;
+    /*
+    border-top: 1px solid #337ab7;
+    border-bottom: 1px solid #337ab7;
+    */
+}
+
+.div-table-body div.div-table-row:hover{
+    background-color: #d9f6f7;
+}
+
+.div-table-row1, .div-table-row2{
+    padding: 5px 0 5px;
+}
+
+.div-table-row2{
+    background-color: #d9edf7;
+}
+
+.div-table-cell-highlight{
+    background-color:#e671d9; 
+    border-radius: 3px; 
+}
+
+/*
+@screen-xs-max: 767px;
+@screen-sm-min : 758px;
+@screen-sm-max : 991px;
+@screen-md-min : 992px;
+@screen-md-max : 1119px;
+@screen-lg-min : 1200px;
+
+@media (max-width: @screen-xs-max) { .div-table-row2{background-color: red;  }}
+@media (min-width: @screen-sm-min) and (max-width: @screen-sm-max) { .div-table-row2{background-color: green;  }}
+@media (min-width: @screen-md-min) and (max-width: @screen-md-max) { background-color: black;  }
+@media (min-width: @screen-lg-min) { background-color: red; }
+*/
+
+div.div-table-body input[type=''], 
+div.div-table-body input[type='number'], 
+div.div-table-body input[type='checkbox'], 
+div.div-table-body input[type='text'], 
+div.div-table-body textarea, 
+div.div-table-body select{
+    width: 95%;
+    height: 34px;
+    padding: 3px 3px;
+    margin:0;
+    font-size: 14px;
+    line-height: 1.42857143;
+    color: #555;
+    background-color: #fff;
+    background-image: none;
+    /*border: 1px solid #ccc;*/
+    border: 1px solid #fff;
+    border-radius: 4px;
+}
+
+
+/*******************  
+
+           table 
+
+table-align-center  : text align center for both head and body
+transposition : from top to botom (label, content)
+table-primary : color css
+table-primary-hover : adapted primary color when hover, active, strip
+           
+*********************/
+table thead tr th.inline-modify,
+table thead tr th.inline-delete{
+    width:20px;
+}
+
+/* align */
+table.table-align-center tbody tr th,
+table.table-align-center tbody tr td,
+table.table-align-center thead tr th{
+    text-align: center;
+    vertical-align: middle;
+}
+
+table.table-align-center tbody tr th{
+    /*padding-left:5px;*/
+    vertical-align: middle;    
+}
+
+
+table.transposition{
+    text-align:left;
+}
+
+table.transposition tr th{
+    width:40%;
+}
+
+/* strip style */
+
+/*
+.table-striped > tbody > tr:nth-of-type(odd) {  
+    background-color: #f9f9f9;
+}
+*/
+
+.table-striped>tbody>tr:nth-child(odd)>td, 
+.table-striped>tbody>tr:nth-child(odd)>th 
+{
+    background-color: #e9f8fb;
+}
+
+/* table-primary-hover - hover style changed to primary */
+.table-hover>tbody>tr.table-primary-hover:hover th,
+.table-hover>tbody>tr.table-primary-hover:hover td,
+.table-hover>tbody>tr.table-primary-hover.active:hover>td,
+.table-hover>tbody>tr.table-primary-hover.active:hover>th,
+.table-hover>tbody>tr.table-primary-hover:hover>.active,
+.table-hover>tbody>tr.table-primary-hover>td.active:hover,
+.table-hover>tbody>tr.table-primary-hover>th.active:hover{
+    background-color: #eeeeee;
+}
+
+/* header style */
+.table>thead>tr.table-primary, 
+.table>thead>tr>td.table-primary, 
+.table>tbody>tr>td.table-primary, 
+.table>tfoot>tr>td.table-primary, 
+.table>thead>tr>th.table-primary, 
+.table>tbody>tr>th.table-primary, 
+.table>tfoot>tr>th.table-primary, 
+.table>thead>tr.table-primary>td, 
+.table>tbody>tr.table-primary>td, 
+.table>tfoot>tr.table-primary>td, 
+.table>thead>tr.table-primary>th, 
+.table>tbody>tr.table-primary>th, 
+.table>tfoot>tr.table-primary>th {
+    background-color: #428bca;
+    border-color: #428bca;
+    color: white;
+}
+
+.table>thead>tr.table-primary{
+    height:40px;
+}
+
+.table>thead>tr.table-primary>th{    
+    background: linear-gradient(rgba(124, 152, 177, 0.88), #428bca);
+    border-bottom: #ffffff 1px solid; /* border bottom of thead*/
+}
+
+table tr.table-primary-light th{
+    border-bottom: solid 1px #f9b9c3;
+    background: linear-gradient(rgba(124, 152, 177, 0.88), rgba(66, 139, 202, 0.41));
+    color: #f5f5f5;
+    border-color: #bce8f1;
+}
+
+table.table-outer-border{border:solid 1px #ddd;}
+
+.panel div.object_list table>thead>tr>th:nth-child(1),
+.panel div.object_list table>tbody>tr>th:nth-child(1){
+    padding-left: 10px;
+}
+
+/************************* 
+
+             left navigation 
+             
+**************************/
+.nav-bar .nav-title{
+    padding: 10px 15px 10px 15px;
+    background-color: #428bca;
+    border-radius: 5px;
+    margin-bottom: 5px;
+    color: #f5f5f5;
+}
+
+.nav-bar ul.nav-stacked{
+    background-color: #eee;
+    border-radius: 5px;
+}
+
+.nav-bar .nav-pills>li.active>a, 
+.nav-bar .nav-pills>li.active>a:hover, 
+.nav-bar .nav-pills>li.active>a:focus {
+    color: #fff;
+    background-color: #ccc!important; /*overwrite bootstrap*/
+}
+
+/************************* 
+
+             inline filter form
+
+form-filter-inline
+
+**************************/
+div.form-filter-inline{
+    background-color: #eeeeee;
+    padding: 5px 10px 10px 10px;
+    border-radius: 3px;    
+}
+
+.form-filter-inline label{
+    display: block;
+    /*
+    background-color: #79aec8;
+    border: #448caf solid 1px;    
+    color: #ffffff;
+    */
+    color: #999;
+    border-radius: 3px;
+    padding: 2px 10px;
+    text-align: center;
+    vertical-align: middle;
+    height: 25px;
+}
+
+.form-filter-inline .form-group{
+    max-width: 200px;
+}
+
+.form-filter-inline .form-group select,
+.form-filter-inline .form-group input{
+    height:30px;
+    width:100%;
+    text-indent: 5px;    
+}
+
+.form-filter-inline div.apply-filter.form-group{
+    vertical-align: bottom;
+    margin-top: 25px;    
+}
+
+.form-filter-inline div.apply-filter.form-group input{
+    height: 32px;
+    padding: 5px 25px 5px 15px;
+}
+
+.form-filter-inline div.apply-filter.form-group a{
+    height: 32px;
+}
+
+/************************* 
+
+             flat filter form
+
+form-filter-flat
+
+**************************/
+.form-filter-flat{
+	padding-bottom: 5px;
+}
+
+.form-filter-flat input,
+.form-filter-flat select {
+    height: 30px;
+    border-radius: 3px;
+    text-indent: 5px;
+    margin-left: 5px;
+    border-style: groove;
+}
+
+
+/************************* 
+
+             table formset
+             
+**************************/
+.table-formset thead{
+    background-color: #428bca;    
+    border-color: #428bca;
+    color: white;
+}
+
+table.table-formset>thead>tr>th{
+    vertical-align: middle!important;
+    text-align: center;    
+}
+
+.table-formset tbody tr{
+    border-top: none!important;
+}
+
+.table-formset tbody tr th{
+    min-width: 200px;
+}
+
+
+.table-formset tbody tr td{
+    padding:0px;
+    margin:0px;
+    text-align: center;
+    vertical-align: middle;
+}
+
+.table-formset tbody tr td input[type="text"],
+.table-formset tbody tr td input[type="number"],
+.table-formset tbody tr td select{
+    padding:0px;
+    margin:0px;
+    width:100%;
+    height: 30px;
+    border:none;
+    text-indent: 0px;
+    min-width: 85px;
+    text-align: center;
+}
+
+.table-formset.table-striped>tbody>tr:nth-child(odd)>td input,
+.table-formset.table-striped>tbody>tr:nth-child(odd)>td select
+{
+    background-color: #e9f8fb;
+}
+
+/* select center */
+.table-formset tbody tr td select{
+width: auto;
+padding: 0 2%;
+margin: 0;
+}
+
+.table-formset tbody tr td select option{
+text-align: center;
+}
+
+/************************* 
+
+             table transposition display
+             
+**************************/
+.table-transposition-display tr th.table-indicator{
+    text-align:center;
+    vertical-align:middle;
+    background-color:#bce8f1!important;
+    color:#468847;
+}
+
+.table-transposition-display tr th.table-group{
+    text-align:center;
+}
+
+.table-transposition-display tbody tr td.cell
+{
+    /*height: 100%;*/
+    padding: 0;
+    vertical-align:middle;
+}
+
+.table-transposition-display tbody tr td.cell div.No
+{
+    /*height: 100%;*/
+    color:red;
+    /*background-color:red;*/
+}
+
+/************************* 
+
+             table form
+
+table_form
+
+**************************/
+table.table_form tr{
+    width:100%;
+}
+table.table_form tr td select, 
+table.table_form tr td input, 
+table.table_form tr td textarea{
+    width: 100%;
+    border-radius: 3px;
+    height: 35px;
+    text-indent:3px;
+    border-style: groove;
+}
+
+table.table_form tr th{
+    padding:0px;
+    margin:0px;
+}
+
+/* list style for radio */
+table.table_form ul{
+	list-style:none;
+}
+
+table.table_form ul.errorlist{
+	padding-left:0px;
+}
+
+table.table_form ul.errorlist+input{
+	border-width:1px!important;
+	border-color:#b94a48;
+}
+
+table.table_form ul.errorlist li{
+	float:left;
+	width:100%;
+	color:#b94a48;
+	font-weight: bold;
+}
+
+table.table_form li{
+	float:left;
+	width:50%;
+}
+
+table.table_form li input[type="radio"]{
+    height:20px;
+    width:20px;
+    margin:10px;
+}
+
+div.ps-list  img{
+    /*margin-left:-20px;*/
+}

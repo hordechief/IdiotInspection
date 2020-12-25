@@ -1,0 +1,9 @@
+
+.field-area ul{
+	list-style:none;
+}
+
+.field-area li{
+	float:left;
+	width:200px;
+}

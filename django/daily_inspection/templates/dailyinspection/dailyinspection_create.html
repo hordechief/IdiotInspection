@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+{% load staticfiles %}
+{% load i18n %}
+
+<style>
+{% block head_css_extend_before_main_css1 %}
+{{ form.media.css }}
+{% endblock %}
+</style>
+
+{% block javascript_extended1 %}
+{{form.media.js}}
+<script type="text/javascript">window.__admin_media_prefix__ = "{% filter escapejs %}{% static 'admin/' %}{% endfilter %}";</script>    
+{% endblock %}
+
+
+<script>
+{% block jquery %}
+    $('input.vDateField').datepicker({
+        dateFormat: "yy-mm-dd", //$(this).val() can define format in widget
+        numberOfMonths: 1,
+        changeYear: true,
+        changeMonth: true,
+        showButtonPanel: true,
+        showWeek: true,
+    });
+{% endblock%}    
+</script>
+
+
+{% block content %}
+
+<div class='row'>
+	<div class='col-sm-6 col-sm-offset-3'>
+		<div class="text-center">
+			<lead><h1>{% trans "Create New Item" %}</h1></lead>
+			<p></p>
+		</div>
+		<hr>
+
+		<div>
+			{% include "form_horizontal.html" with file=True %}
+		</div>
+	</div>
+</div>
+
+
+{% endblock %}

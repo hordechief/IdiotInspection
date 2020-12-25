@@ -1,0 +1,55 @@
+body {
+  /*min-height: 2000px;*/
+}
+
+
+.navbar-static-top {
+  /*background-color: #5ACDFF;*/
+  /*border-color: #00B2FF;*/
+  margin-bottom: 0px;  
+}
+
+.navbar-default .navbar-brand {
+    color: #000;
+    font-weight: 900;
+}
+
+.navbar-default .navbar-brand:hover {
+  color: #FFF;
+}
+
+.navbar-default .navbar-nav>li>a:hover {
+    color: #000;
+}
+
+/*.navbar-default .navbar-nav>.active>a {
+    background-color: #0E3D14;
+}*/
+
+.navbar-default .navbar-toggle {
+ border-color: transparent !important;
+}
+
+.navbar-toggle:hover {
+	background-color: #3c93de !important;
+}
+
+.navbar-toggle {
+	background-color: #5690c2 !important;
+}
+
+
+
+/* nav bar second level */
+.nva-bar-2 {
+	background-color: #f8f8f8;
+	border-bottom: solid 1px #e7e7e7;
+	background: -webkit-linear-gradient(#f8f8f8, #d9d9d9); /* Safari 5.1 - 6.0 */
+	background: -o-linear-gradient(#f8f8f8, #d9d9d9); /* Opera 11.1 - 12.0 */
+	background: -moz-linear-gradient(#f8f8f8, #d9d9d9); /* Firefox 3.6 - 15 */
+	background: linear-gradient(#f8f8f8, #d9d9d9); /* standard */	
+}
+
+.nva-bar-2 ul, .nva-bar-2  ol{
+    margin-top: 10px; /* = margin bottom*/
+}

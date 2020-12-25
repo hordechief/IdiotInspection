@@ -1,0 +1,19 @@
+/* to let below css width take effort, should remove talbe-layout fix property */
+
+
+body.model-dailyinspection #changelist table tbody tr td:nth-child(3) {
+    width:8%;
+}
+
+body.model-dailyinspection #changelist table tbody tr td:nth-child(4) {
+    width:8%!important;
+}
+
+body.model-dailyinspection #changelist table tbody tr td:nth-child(5) {
+    width:8%!important;
+}
+
+body.model-dailyinspection #changelist table tbody tr td:nth-child(9) {
+    width:8%!important;
+}
+

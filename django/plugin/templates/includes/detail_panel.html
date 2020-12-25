@@ -1,0 +1,67 @@
+
+{% load myform %}
+{% load i18n %}
+
+<div class="panel panel-primary">
+    {% if not notitle %}
+    <div class="panel-heading">
+        <h3 class="panel-title">
+            {% if title %}{% trans title %}{% else %}{% trans "Base Information" %}{% endif %}
+        </h3>
+    </div>
+    {% endif %}
+    <div class="panel-body">
+        <div class="row">
+            {% for fieldset in fieldsets %}
+            <div class="{% if fieldsets|length == 1 %}col-sm-12{% else %}col-sm-6{% endif %}">
+                <table class="transposition table-striped table-hover table-responsive table-condensed"  style="width: 100%">
+                    {% if fieldset.0 %}<thead><th>{% trans fieldset.0 %}</th><th></th></thead>{% endif %}
+                    <tbody>                            
+                    {% for fieldname in fieldset.1.fields %}
+                        <tr>
+                            <th>{{ object|my_get_field_verbose_name:fieldname }}</th>
+                            <td> 
+                            	{% if fieldname in fields_files %}<a href="/media/{{ object|my_get_field_value:fieldname }}">{{object|my_get_field_value:fieldname}}</a>
+                            	{% elif fieldname in fields_display %}{{ object|my_get_field_display:fieldname }}
+                            	{% elif fieldname in fields_images %}{% if object|my_get_field_url:fieldname %}<img src="{{ object|my_get_field_url:fieldname }}" class="img-responsive" style="width: 100%;">{% endif %}
+                            	{% else %}{{ object|my_get_field_value:fieldname }}{% endif %}
+                            </td>
+                        </tr>
+                    {% endfor %}                            
+                    </tbody>
+                </table>                        
+            </div>
+            {% endfor %}
+        </div>
+        
+        <table class="transposition table-striped table-hover table-responsive table-condensed"  style="width: 100%">
+            <tbody>            
+            {% if not fieldsets|length %}
+                {% for field in fields %}                       
+                    <tr>
+                        <th>{{field.verbose_name}}</th>
+                        <td>
+                            {% if field.name in fields_images %}
+                                {% if object|my_get_field_url:field.name %}<img class="img-responsive" style="width:100%;" src="{{object|my_get_field_url:field.name}}">{% endif %}
+                            {% elif field.name in fields_files %}
+                                <a href="/media/{{ object|my_get_field_value:field.name }}">{{object|my_get_field_value:field.name}}</a>
+                            {% elif field.name in fields_display %}
+                                {{object|my_get_field_display:field.name}}
+                            {% elif field.name in fields_safe_content %}
+                                {{object|my_get_field_value:field.name|safe}}                                
+                            {% else %}
+                                {{object|my_get_field_value:field.name}}
+                            {% endif %}
+                        </td>
+                    </tr>
+                {% endfor %}   
+            {% endif %}     
+            </tbody>
+        </table>            
+        
+
+    </div>
+</div>
+
+
+                                

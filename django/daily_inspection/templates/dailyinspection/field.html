@@ -1,0 +1,30 @@
+
+
+{% if field.errors %}<div class="error" style="color:#b75f33">{{ field.errors }}</div>{% endif %}
+<div class="row field-area form-group list-unstyled list-inline  {% if field.errors %}error has-error{% endif %}">  
+    <div class="col-sm-2"> 
+        {{ field.label_tag }}
+    </div>  
+    <div class="col-sm-10 {% if image %}image-field{% endif %}">
+        {% if image %}            
+            <div id="div_id_{{field.name}}">
+            	<label for="{{field.name}}-modify" class="control-label " style="float:left; clear: both">{% if field.value %}修改: {% else %} 添加:&nbsp {% endif %}</label>
+	            <input id="id_{{field.name}}" name="{{field.name}}" type="file" accept="video/*;capture=camcorder">             
+            </div>
+            <br>
+            <div >
+            	{% if field.value %}
+            		<img  class= 'img-responsive' src="{{request.media}}{{field.value}}"/>
+            	{% endif %}
+            </div>
+            {% if field.value and not field.field.required %}
+            <div>
+            	<label for="{{field.name}}-clear_id" >清除</label>
+            	<input id="{{field.name}}-clear_id" name="{{field.name}}-clear" type="checkbox">
+            </div>
+            {% endif %}
+        {% else %}
+            {{ field }} 
+        {% endif %}
+    </div>
+</div>

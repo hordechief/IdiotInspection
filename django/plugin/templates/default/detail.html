@@ -1,0 +1,69 @@
+{% extends "plugin/default/base.html" %}
+{% load crispy_forms_tags %}
+{% load pagination_tags %}
+{% load i18n %}
+
+{% block navbar-main %}
+    {% if popup_view %}
+    {% else %}
+        {{block.super}}
+    {% endif %}
+{% endblock %}
+
+{% block nav-2nd %}
+    {% if popup_view %}
+    {% else %}
+        {{block.super}}
+    {% endif %}
+{% endblock %}
+
+{% block breadcrumb  %}
+    {% if popup_view %}
+    {% else %}
+        {{block.super}}
+    {% endif %}
+{% endblock %}
+
+{% block footer %}
+    {% if popup_view %}
+    {% else %}
+        {{block.super}}
+    {% endif %}
+{% endblock %}
+
+{% block content %}
+<div class='row'>
+    {% if popup_view %}
+    <div class='col-sm-12 '>
+    <br>
+    {% else %}
+    <div class='col-sm-9 '>
+    {% endif %}
+
+    {% include "includes/detail_panel.html" %}
+
+    {% block inline_content %}
+    {% endblock %}
+
+    {% block nav_update %}
+        {% if popup_view %}
+        {% else %}
+            {% if object.get_absolute_url_update and request.user.is_staff %}<a href="{{ object.get_absolute_url_update }}" class="btn btn-primary" >{% trans "Update" %}</a>{% endif %}
+        {% endif %}    
+    {% endblock %}
+
+    {% block nav_back %}
+        {% if back_url %}<a href="{{back_url}}" class="btn btn-default" >{% trans "Back" %}</a>{% endif %}
+        {% if popup_view %}
+        {% else %}
+            {% if object.get_absolute_url_list %}<a href="{{ object.get_absolute_url_list }}" class="btn btn-default" >{% trans "list" %}</a>{% endif %}    
+            {% if request.user.is_staff or request.user.is_superuser %}{% if object.get_absolute_url_delete %}        
+            <a class="btn btn-danger" href="{{object.get_absolute_url_delete}}"  >{% trans 'Delete' %}</a>
+            {% endif %}{% endif %}
+        {% endif %}    
+    {% endblock %}
+
+    </div>
+</div>
+
+{% endblock %}         

@@ -1,0 +1,89 @@
+{% load i18n %}
+{% load myform %}
+{% load staticfiles %}
+
+<!--
+	object_list
+	category
+	project_name
+	indicator
+	
+	thead_css
+	column_key
+	columns
+	fields_display
+-->
+
+<div style="overflow-x:auto;">
+    <table class="table-transposition-display table-align-center table table-bordered table-hover table-striped table-container table-condensed" >
+        <thead>
+            <tr class={% if thead_css %}{{thead_css}}{% else %}"table-primary"{% endif %}>
+                {% if groups %}
+                <th>{% trans "category" %}</th>                
+                {% endif %}      
+
+                <th>{% trans project_name %}</th>
+
+                {% if indicator %}
+                <th>{% trans "indicator" %}</th>
+                {% endif %}
+
+                {% for column in columns %}
+                <th>{{column.1}}</th>
+                {% endfor %}
+            </tr>
+        </thead>
+        <tbody>
+            {% for row in rows %}
+            <tr>
+                {% if groups %}           
+                    {% for group in groups %}
+                        {% if group.0 == row.0.name %}
+                        <th class="table-group" rowspan={{group.2}}>{% trans group.1 %}</th>
+                        {% endif %}
+                    {% endfor %}
+                {% endif %}    
+
+                <th class="item" >{{row.0.verbose_name}}</th>
+
+                {% if indicator %}
+                <th class="table-indicator">{{row.1}}</th>
+                {% endif %}
+
+                {% for column in columns %}
+                    <td class="cell">
+                    {% for object in object_list %}
+                        {% if object|my_get_field_value:column_key == column.0 %}
+
+                            {% if not request.user.is_staff and object|my_isboolean:row.0.name %}                     
+                                <div class="Yes"><i style="color:#84d284;" class="fa fa-check" aria-hidden="true"></i></div>
+                            {% elif object|my_get_field_value:row.0.name == True and object|my_isboolean:row.0.name %}                     
+                                <div class="Yes"><i style="color:#84d284;" class="fa fa-check" aria-hidden="true"></i></div>
+                            {% elif object|my_get_field_value:row.0.name == False and object|my_isboolean:row.0.name %}   
+                                <div class="No"><i class="fa fa-close" aria-hidden="true"></i></div>
+                            {% else %}
+                                {% if row.0.name in fields_display %}
+                                    {{object|my_get_field_display:row.0.name }}
+                                {% else %}
+                                    {{object|my_get_field_value:row.0.name }}
+                                {% endif %}
+                            {% endif %}
+                            
+                            {% if column_key == row.0.name and request.user.is_staff %}
+                            <a href="{{object.get_absolute_url }}"><i class="fa fa-1x fa-pencil-square-o" aria-hidden="true"></i></a>
+                            {% endif %}
+                        {% endif %}             
+                    {% endfor %}
+                    {% if column_key == row.0.name and not column.0 in columns_exist and request.GET.year and request.user.is_staff %}
+                    <a href="{{create_url}}{{column.0}}"><i class="fa fa-1x fa-plus-square-o" aria-hidden="true"></i></a>
+                    {% endif %}                       
+                    </td>
+                {% endfor %}
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>   
+</div>
+
+
+<!-- param : project_name,  columns, date_field_list -->

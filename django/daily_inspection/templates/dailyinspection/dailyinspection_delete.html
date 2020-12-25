@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+{% load i18n %}
+
+{% block content %}
+<div class="row">
+    <div class="col-sm-6">
+        <form method="POST" action="">{% csrf_token %}
+            <h2>{% trans "Delete Confirm" %}?</h2>
+            <h4>{% trans "Are you sure you want to delete" %} : <small>{{object}}</small></h4> <br>
+            <button type="submit" class="btn btn-danger">{% trans "confirm" %}</button>
+            <a type="button" class="btn btn-info" href="{{object.get_absolute_url}}">{% trans "cancel" %} </a>
+        </form>
+    </div>
+</div>
+{% endblock %}

@@ -1,3 +1,12 @@
 gunicorn
 django==2.2
-djangorestframework
+djangorestframework==3.12.2
+Pillow==7.2.0
+django-uuslug==1.2.0
+six==1.15.0
+django-chartjs==1.2
+django-filter==2.4.0
+#django-breadcrumbs==1.1.3
+django-crispy-forms==1.8.1
+django-registration-redux==2.8
+dj-pagination==2.5.0

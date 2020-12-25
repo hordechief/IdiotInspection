@@ -1,0 +1,242 @@
+{% extends "base.html" %}
+{% load crispy_forms_tags %}
+{% load pagination_tags %}
+{% load i18n %}
+
+<style type="text/css">
+{% block style %}
+
+.page-header {
+    padding: 4px 0px 5px 10px;
+    margin: 20px 0 20px;
+    border-bottom: 1px solid #eee;
+    background-color: #d9edf7;
+    color: #428bca;
+    border-radius: 5px;
+}
+
+.fa{
+    line-height: 1.4285!important;
+    font-size: 14px!important;
+}
+
+a:link {text-decoration: none;}
+a:visited {text-decoration: none;}
+a:active {text-decoration: none;}
+a:hover {text-decoration: none;}
+
+.left-bar{
+    background-color: aliceblue;
+    border-radius : 3px;
+    color: #777;
+    padding-top: 8px;
+}
+div.categorylist{
+    margin-right: 0px; /* if the value > 0, then next div will move to next line*/
+    padding: 15px 8px;
+    /*background-color: #eef1f3;*/
+}
+
+.categorylist:hover, .category-content .active{
+    background-color: #d9edf7;
+}
+
+.category-content{
+    text-decoration: none;
+    outline: none;
+    border-radius: 3px;
+    border: solid 1px #d9edf7;
+    overflow:hidden;
+    margin: 1px; /* adapt pic width div */
+    /*font-size: smaller;*/
+}
+
+.overdue{
+    color:red;
+}
+
+/*@screen-xs-max: 767px;*/
+/*@screen-sm-min : 758px;*/
+/*@screen-sm-max : 991px;*/
+/*@screen-md-min : 992px;*/
+/*@screen-md-max : 1119px;*/
+/*@screen-lg-min : 1200px;*/
+
+@media (max-width: 767px){
+    .display_single{
+        display: block;
+    }
+}
+/*@media (min-width: @screen-sm-min) and (max-width: @screen-sm-max) { .row2{background-color: green;  }}*/
+/*@media (min-width: @screen-md-min) and (max-width: @screen-md-max) { background-color: black;  }*/
+@media (min-width: 768px) {
+    .display_single {
+        display: none;
+    }
+
+
+/*height vs line-height styling
+
+
+height is the vertical measurement of the container.
+
+line-height is the distance from the top of the first line of text to the top of the second.
+
+If used with only one line of text I'd expect them to produce similar results in most cases.
+
+I use height when I want to explicitly set the container size and line-height for typographic layout, where it might be relevant if the user resizes the text.
+*/
+    .img-center {
+        /*display:table-cell;*/
+        vertical-align:middle;
+        text-align:center;
+
+        height: 150px;
+        line-height: 150px; /*very important for center*/
+        border: solid 1px #e7e7eb;
+    }
+
+    .img-center img.img-responsive{
+        /*height: 100px!important;
+        width: auto!important;
+        max-width: 100%!important;*/
+        max-height: 100%!important;
+        vertical-align: middle!important;
+        display: inline-block!important;  /*very important for IE display */
+    }
+
+}
+
+{% endblock%}
+</style>
+
+
+<script>
+{% block jquery %}
+    //http://www.runoob.com/jqueryui/example-datepicker.html
+
+    $('input.calenda').datepicker({
+        dateFormat: "yy-mm-dd", //$(this).val() can define format in widget
+        numberOfMonths: 2,
+        changeYear: true,
+        changeMonth: true,
+        showButtonPanel: true,
+        showWeek: true,
+    });
+{% endblock %}
+</script>
+
+
+<script>
+{% block js %}
+
+$(document).ready(function(){
+    $("td:contains('uncompleted')").css("background-color","red");
+    $("td:contains('completed')").css("background-color","green");
+
+});
+
+{% endblock %}
+</script>
+
+{% block content %}
+
+<div class='row'>
+    <div class='col-xs-4 col-sm-3 col-md-2 left-bar'>
+        <form method="GET" action="{% url 'dailyinspection_list' %}">
+            {{ InspectionFilterForm|crispy }}
+
+            <!-- <input type='hidden' name='q' value='{{ request.GET.q }}' /> -->
+            <input type='submit' class='btn btn-primary' style="margin-bottom: 5px;" value="{% trans 'Apply Filter' %}">
+            <a class="btn btn-default"  style="margin-bottom: 5px;" href="{% url 'dailyinspection_list' %}"  >{% trans 'Clear Filters' %}</a>
+        </form>
+        <hr>
+    </div>
+    <div class='col-xs-8 col-sm-9 col-md-10 container'>
+
+        
+        <div class="row category-content">
+            <div class='col-xs-4 col-md-2 categorylist active text-center'>
+                <a href="{% url 'dailyinspection_list' %}">{% trans "All Categories" %}</a>
+            </div>
+
+            {% for category in categories%}
+            <div class='col-xs-4 col-md-2 categorylist  text-center {% if category.0 in request.GET.category %}active{% endif %}'>
+                <a href="{% url 'dailyinspection_list' %}?category={{category.0}}" style="display: block; " >{{category.1}}</a>
+            </div>
+            {% cycle '' '' '' '' '' '</div><div class="row">'%}
+            {% endfor %}
+        </div>
+        <br>
+
+        <div class="object_create pull-right">
+            <form id="export" method="POST" action="" style="float: left;padding-right: 10px;">{% csrf_token %}                        
+                <a class="fa fa-download fa-1x" href="javascript:;" onclick="document.getElementById('export').submit();">{% trans "download" %}</a>
+            </form>                
+            {% if request.user.is_staff or request.user.is_superuser %}
+            <a class="fa fa-plus-square fa-1x" href="{% url 'dailyinspection_create' %}" title='{% trans "Create New Item" %}' > {% trans "Create" %}</a>
+            {% endif %}
+            {% comment %}
+            <a class="fa fa-area-chart fa-1x"  href="{% url 'daily_inspection_stat' %}"  title='{% trans "Inspection Statistic" %}' > {% trans "Statistic" %}</a>
+            {% endcomment %}
+            <a class="fa fa-warning fa-1x"  style="color: red;" href="{% url 'dailyinspection_list' %}?overdue=1"  title='{% trans "Inspection Overdue" %}' > <span style="color: #428bd3;">{% trans "Inspection Overdue" %}</span></a>
+        
+        </div>
+
+        <div class="object_lists" style="clear: both;">
+            {% autopaginate object_list 8 %}
+            
+            {% if object_list.count == 0 %}
+                {% trans "Nothing found" %}
+            {% else %}
+                {% include "dailyinspection/inspections.html" with object_list=object_list %}
+            {% endif %}
+            
+            <div class="text-center">
+            {% paginate %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<hr>
+<div class="row">
+
+    <div class="col-sm-6">
+        <script type="text/javascript" src="https://cdn.bootcss.com/jquery/1.10.0/jquery.min.js"></script>
+        <script type="text/javascript" src="https://cdn.bootcss.com/Chart.js/2.7.1/Chart.min.js"></script>
+        <div class="page-header">
+            <h3>{% trans "Inspection Statistics" %} <small> INSPECTION STATISTICS TOTAL:{{object_list_count}}</small></h3>
+        </div>
+        <canvas id="myChartStat" width="500" height="200"></canvas>
+
+
+        <script type="text/javascript">
+
+            var ctx = $("#myChartStat").get(0).getContext("2d");
+
+            new Chart(ctx, {
+                type: 'doughnut',  // 'pie'
+                data: {{data|safe}},
+                options: {}
+            });
+        </script>
+    </div>
+
+    <div class="col-sm-6">
+	    <div class="page-header">
+	        <h3>{% trans "Latest Update" %} <small>LAST UPDATED</small></h3>
+	    </div>
+
+	    <ul style="list-style:none; padding-left:2px; margin-left:2px;">
+	        {% for object in objects_sort %}
+	        <li style="padding-bottom: 5px;">
+	            <a href='{{ object.get_absolute_url }}'>{{object}}  -  <small>{{object.updated}}</small></a>
+	        </li>
+	        {% endfor %}
+	    </ul>
+	</div>	    
+</div>
+
+{% endblock %}
+

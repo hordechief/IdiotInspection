@@ -1,0 +1,36 @@
+{% load i18n %}
+
+<div class="row">
+    <div class="col-sm-5">
+        <div class="dataTables_info" id="example2_info" role="status" aria-live="polite">{% blocktrans %}Showing {{start}} to {{end}} of {{total}} entries{% endblocktrans %}</div>
+        <form  method="GET" action="" style="float: left;">
+            <label>{% trans "each page" %}
+                <select name="pagenum_perpage" " class="input-sm?">
+                    <option value="10" {% if pagenum_perpage == 10 %}selected{% endif %}>10</option>
+                    <option value="25" {% if pagenum_perpage == 25 %}selected{% endif %}>25</option>
+                    <option value="50" {% if pagenum_perpage == 50 %}selected{% endif %}>50</option>
+                    <option value="100" {% if pagenum_perpage == 100 %}selected{% endif %}>100</option>
+                </select> {% trans 'entries' %}
+            </label>&nbsp;&nbsp;&nbsp;
+            <input id="id_des_page" name="page" type="text" value="{{page}}" style="width: 50px; text-align: center;"> / {{total_page}}{% trans 'Page' %}
+            <input type='submit' class='btn btn-primary' value="{% trans 'Go!' %}">
+        </form>   
+    </div>
+    <div class="col-sm-7">
+        <div class="dataTables_paginate paging_simple_numbers pull-right" id="example2_paginate" >
+            <ul class="pagination" style="margin: 0px;">
+                <li class="paginate_button previous {% if not object_list.has_previous %}disabled{% endif %}" id="example2_previous">
+                    <a href="{% if object_list.has_previous %}?page={{ object_list.previous_page_number }}&pagenum_perpage={{pagenum_perpage}}{% endif %}{{getvars}}" aria-controls="example2" data-dt-idx="0" tabindex="0">{% trans 'previous' %}</a>
+                </li>
+                {% for page in pages %}
+                <li class="paginate_button {% if page == page_highlight %}active{% endif %}">
+                    <a href="?page={{page}}&pagenum_perpage={{pagenum_perpage}}{{getvars}}" aria-controls="example2" data-dt-idx="{{forloop.count}}" tabindex="0">{{page}}</a>
+                </li>
+                {% endfor %}
+                <li class="paginate_button next {% if not object_list.has_next %}disabled{% endif %}" id="example2_next">
+                    <a href="{% if object_list.has_next %}?page={{ object_list.next_page_number }}&pagenum_perpage={{pagenum_perpage}}{% endif %}{{getvars}}" aria-controls="example2" data-dt-idx="7" tabindex="0">{% trans 'next' %}</a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</div>    

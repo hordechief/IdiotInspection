@@ -1,0 +1,12 @@
+{% load i18n %}
+
+<div class="thumbnail text-center">
+	{% if inspection.get_image_url_before %} 
+		<a href='{{ inspection.get_absolute_url }}'><div class="img-center"><img  id='img' class= 'img-responsive' src='{{inspection.get_image_url_before}}'/></div></a><br/>
+	{% endif %}
+
+    <small>{{inspection.get_html_due_date}}</small> <span class='owner'>{{inspection.owner}}  </span><span class='status'>{{inspection.get_rectification_status_display}}</span> <br>
+
+	<a type="button" class="btn btn-primary display_single" style="float:left;padding:4px 12px; margin-left: 10px; margin-top:5px;" href='{{ inspection.get_absolute_url }}'>{% trans "View" %}</a>
+    <h5><a href='{{ inspection.get_absolute_url }}'>{{inspection.inspection_content|truncatechars:10}}</a></h5>
+</div>

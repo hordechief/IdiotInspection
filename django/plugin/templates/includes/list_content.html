@@ -1,0 +1,151 @@
+
+{% load myform %}
+{% load i18n %}
+{% load staticfiles %}
+{% load pagination_tags %}
+
+
+<!--  Parameter 
+    fields
+    fields_display
+    object_list
+    field_display_links
+    fields_files
+    fields_images
+    fields_display
+    foreign_fields_images
+    allow_edit
+    line_per_page
+    values_green
+    values_red
+    tid : table id
+ -->
+
+<script type="text/javascript">
+    function ShowPopupWindow(href){
+        event.preventDefault();
+        window.open(href,"new","height=500,width=800,top=100,left=200,resizable=yes,scrollbars=yes,location=no",false);
+        // window.showModalDialog(href, "", "dialogWidth=800px;dialogHeight=350px;help:no;center:yes;resizable:yes;status:no;scroll:yes")
+}
+</script>
+
+<div class="object_list {{object_list.0|get_instance_name|lower}} {{div_class}}" style="clear: both;{% if not not_allow_overflow %}overflow-x:auto;{% endif %}">
+    {% if line_per_page%}
+    {% autopaginate object_list line_per_page %}
+    {% endif %}
+
+    {% if not object_list or object_list.count == 0 %}
+        <p style="padding:10px;">{% trans "Nothing found" %}</p>
+    {% else %}
+        <table class="table table-striped table-hover table-responsive table-condensed {% if not no_table_border %}table-outer-border{% endif %} {% if not table_class %}table-align-center{% else %}{{table_class}}{% endif %}" {% if tid %}id="{{tid}}"{% endif %} }> <!-- default value : table-align-center -->
+            <thead>
+                <tr class="{% if not thead_class %}table-primary{% else %}{{thead_class}}{% endif %}">
+                    {% if checkbox %}<th></th>{% endif %}
+                    {% for fieldname in fields %}
+                    <th class="{{fieldname}}">{{ object_list.0|my_get_field_verbose_name:fieldname }}</th>
+                    {% endfor %}
+                    {% for fieldname in fields_property %}
+                    <th class="{{fieldname.0}}">{{fieldname.1}}</th>
+                    {% endfor %}
+                    {% for field in foreign_fields_images %}
+                    <th></th>
+                    {% endfor %}
+                    {% if allow_view %}<th class="inline-view"></th>{% endif %}
+                    {% if allow_edit and request.user.is_staff %}<th class="inline-modify"></th>{% endif %}
+                    {% if allow_delete and request.user.is_staff %}<th class="inline-delete"></th>{% endif %}
+                </tr>
+            </thead>
+
+            <tbody>            
+            {% for object in object_list %}
+                <tr class="table-primary-hover">
+                    {% if checkbox %}<td></td>{% endif %}
+                    {% for fieldname in fields %}
+                        {% if forloop.first %}
+                            {% if span|length %}
+                                {% if forloop.parentloop.counter0 in span.keys %}<th class="table-group" rowspan="{{span|my_get_dict:forloop.parentloop.counter0}}" colspan=1 >{% endif %}
+                            {% else %}
+                                <th class="{{fieldname}}">
+                            {% endif %}
+                        {% else %}
+                            <td class="{{fieldname}}"  {% if fieldname in fields_css %}style="{{object|my_get_field_css:fieldname}}"{% endif %} {% if fieldname in fields_warning and object.show_warning %}style="{{object.overdue_color}}"{% endif %}>
+                        {% endif %}
+
+                        {% if forloop.first and span and not forloop.parentloop.counter0 in span.keys %}
+                            <!-- group, do nothing -->
+                        {% else %}
+                    
+                            {% if forloop.first and fields|length > 1 and object.get_absolute_url and not allow_edit and not forbidden_links %}
+                                <a href="{{object.get_absolute_url}}{% if parent_object_next or back_url %}?next={% if parent_object_next.get_absolute_url %}{{parent_object_next.get_absolute_url|urlencode}}{% else %}{{back_url|urlencode}}{% endif %}{% endif %}"
+                                        {% if target_blank_popup %}onclick="ShowPopupWindow('{{ object.get_absolute_url }}{% if parent_object_next or back_url %}?next={% if parent_object_next.get_absolute_url %}{{parent_object_next.get_absolute_url|urlencode}}{% else %}{{back_url|urlencode}}{% endif %}{% endif %}{% if parent_object_next or back_url %}&_popup=1'{% else %}?_popup=1'{% endif %});"{% endif %}>
+                            {% elif fieldname in field_display_links %}
+                                <a href="{{object.get_absolute_url}}{% if parent_object_next or back_url %}?next={% if parent_object_next.get_absolute_url %}{{parent_object_next.get_absolute_url|urlencode}}{% else %}{{back_url|urlencode}}{% endif %}{% endif %}"
+                                        {% if target_blank_popup %}onclick="ShowPopupWindow('{{ object.get_absolute_url }}{% if parent_object_next or back_url %}?next={% if parent_object_next.get_absolute_url %}{{parent_object_next.get_absolute_url|urlencode}}{% else %}{{back_url|urlencode}}{% endif %}{% endif %}{% if parent_object_next or back_url %}&_popup=1'{% else %}?_popup=1'{% endif %});"{% endif %}>
+                            {% endif %}
+
+                            {% if object|my_isboolean:fieldname %}
+                                {% if object|my_get_field_value:fieldname == True %}
+                                    <a class="fa fa-check"></a>
+                                {% else %}
+                                    <a class="fa fa-close"></a>
+                                {% endif %}                            
+                            {% elif fieldname in fields_display %}
+                                {{ object|my_get_field_display:fieldname }}
+                            {% elif fieldname in fields_files %}
+                                <a href="/media/{{ object|my_get_field_value:fieldname }}">{{object|my_get_field_value:fieldname}}</a>
+                            {% elif fieldname in fields_images %}
+                                {% if object|my_get_field_url:fieldname %}<img class="img-responsive" style="width:100%;" src="{{object|my_get_field_url:fieldname}}">{% endif %}
+                            {% elif fieldname in fields_safe %}
+                                {{ object|my_get_field_value_safe:fieldname }}
+                            {% else %}
+                                {{ object|my_get_field_value:fieldname }}
+                            {% endif %}  
+
+                            {% if forloop.first and fields|length > 1 and allow_links%}
+                                </a>
+                            {% elif fieldname in field_display_links %}
+                                </a>
+                            {% endif %}
+                        {% endif %}
+                            
+                        {% if forloop.first %}
+                            {% if forloop.parentloop.counter0 in span.keys %}</th>{% endif %}
+                        {% else %}
+                            </td>
+                        {% endif %}
+                    {% endfor %}
+
+                    {% for fieldname in fields_property %}
+                    <td class="{{fieldname.0}}">{{object|my_get_field_value:fieldname.0}}</td>
+                    {% endfor %}
+                    
+                    {% for fieldname in foreign_fields_images %}
+                        <td class="{{fieldname}}">{% if object|my_get_foreign_field_url:fieldname %}<img src="{{object|my_get_foreign_field_url:fieldname}}" class="img-responsive" style="width:100px;">{% endif %}</td>
+                    {% endfor %}
+
+                    {% if allow_view %}<td class="inline-view"><a class="fa fa-eye" href="{{ object.get_absolute_url }}{% if parent_object_next or back_url %}?next={% if parent_object_next.get_absolute_url %}{{parent_object_next.get_absolute_url|urlencode}}{% else %}{{back_url|urlencode}}{% endif %}{% endif %}" 
+                                                         {% if target_blank %}target='_blank'{% endif %} 
+                                                         {% if target_blank_popup %}onclick="ShowPopupWindow('{{ object.get_absolute_url }}{% if parent_object_next or back_url %}?next={% if parent_object_next.get_absolute_url %}{{parent_object_next.get_absolute_url|urlencode}}{% else %}{{back_url|urlencode}}{% endif %}{% endif %}{% if parent_object_next or back_url %}&_popup=1'{% else %}?_popup=1'{% endif %});"{% endif %}></a</td>{% endif %}
+                    {% if allow_edit and request.user.is_staff %}<td class="inline-modify"><a class="fa fa-pencil" href="{{ object.get_absolute_url_update }}{% if parent_object_next.get_absolute_url or back_url or page%}?next={% if parent_object_next.get_absolute_url %}{{parent_object_next.get_absolute_url|urlencode}}{% else %}{{back_url|urlencode}}{% endif %}{% if page %}&page={{page}}{% endif %}{% endif %}"></a</td>{% endif %}
+                    {% if allow_delete and request.user.is_staff %}<td class="inline-delete"><a class="fa fa-trash" href="{{ object.get_absolute_url_delete }}{% if parent_object_next.get_absolute_url or back_url or page%}?next={% if parent_object_next.get_absolute_url %}{{parent_object_next.get_absolute_url|urlencode}}{% else %}{{back_url|urlencode}}{% endif %}{% if page %}&page={{page}}{% endif %}{% endif %}"></a</td>{% endif %}
+                    
+                </tr>
+            {% endfor %}
+            </tbody>            
+            
+        </table>                
+    {% endif %}
+    
+    {% if line_per_page %}
+    <div class="text-center">
+    {% paginate %}
+
+    <div class="row" style="margin:0px; text-align:left;">
+        <div class="col-sm-12">
+	    {% trans "current page" %}: {{page_obj.number}}, {% trans "totally items" %}: {{paginator.count}} {% trans "items per page" %}: {{paginator.per_page}} {% comment %}page ranges: {{paginator.page_range}} {% endcomment %}
+        </div>
+    </div>
+
+    </div>
+    {% endif %}
+</div>

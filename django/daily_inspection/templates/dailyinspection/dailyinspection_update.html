@@ -1,0 +1,124 @@
+{% extends "base.html" %}
+{% load crispy_forms_tags %}
+{# load myform_tags #}
+{% load i18n %}
+{% load staticfiles %}
+
+<script type="text/javascript">window.__admin_media_prefix__ = "{% filter escapejs %}{% static 'admin/' %}{% endfilter %}";</script>
+<script src="{% static 'js/jquery.init.both.js' %}"></script>
+<script src="/admin/jsi18n/"></script>
+<script src="{% static 'admin/js/core.js' %}"></script>
+<link rel="stylesheet" type="text/css" href="{% static 'admin/css/base.css' %}" />
+<link rel="stylesheet" type="text/css" href="{% static 'admin/css/forms.css' %}" />
+{% if  not "calendar.js" in form.media.js|escapejs  %}
+<script src="{% static 'admin/js/calendar.js' %}"></script>
+{% endif %}
+{% if  not "DateTimeShortcuts.js" in form.media.js|escapejs  %}
+<script src="{% static 'admin/js/admin/DateTimeShortcuts.js' %}"></script>
+{% endif %}
+
+
+
+<script src="{% static 'js/form_horizontal_layout.js' %}"></script>
+
+
+<style>
+{% block head_css_extend_before_main_css1 %}
+{{form.media.css}}
+{% endblock %}
+</style>
+
+{% block javascript_extended1 %}
+{{form.media.js}}
+<script type="text/javascript">window.__admin_media_prefix__ = "{% filter escapejs %}{% static 'admin/' %}{% endfilter %}";</script> 
+{% endblock %}
+
+
+{% block content2 %}
+<div class='row'>
+    <div class='col-sm-6 col-sm-offset-3'>
+        <form class="form-horizontal" enctype="multipart/form-data" method="POST" action='' >{% csrf_token %}
+            {{form|crispy}}
+            <input style="width:30%" type="submit" name="submit" class="btn btn-default pull-right" value="submit" />
+        </form>
+    </div>
+</div>
+{% endblock %}
+
+<script>
+{% block jquery %}
+    $('input.vDateField').datepicker({
+        dateFormat: "yy-mm-dd", //$(this).val() can define format in widget
+        numberOfMonths: 1,
+        changeYear: true,
+        changeMonth: true,
+        showButtonPanel: true,
+        showWeek: true,
+    });
+{% endblock%}    
+</script>
+
+
+{% block content %}
+
+<div class='row'>
+    <div class='col-sm-6 col-sm-offset-3'>
+        
+        <div class="text-center">
+            <lead><h2>{{object.inspection_content}}</h2></lead>
+            <hr><br>
+            {% comment %}
+            <span><b>{% trans 'Create' %}</b></span> : {{object.created}} &nbsp &nbsp &nbsp
+            {% endcomment %}
+            <div class="pull-right">
+                <span><small>{% trans 'Last Update' %}</small></span> : {{object.updated}}
+            </div>
+            <br><br>
+        </div>         
+
+        <div>
+            {# include "form_horizontal.html" with submitvalue="Submit" file=True #} 
+            <form class="form-horizontal" enctype="multipart/form-data" method="POST" action='' style="padding: 3px">{% csrf_token %}
+
+                <div class="row">
+                    <div class="col-sm-12">
+
+                    {% if form.errors %}
+                        <p style="color: #b75f33;">
+                            {{form.non_field_errors}}
+                        </p>
+                    {% endif %}
+
+                    {% for field in form %}
+                        {% if not 'image_' in field.name %}
+                            {% include "dailyinspection/field.html" %}
+                        {% endif %}
+                    {% endfor %}
+
+                    {% for field in form %}
+                        {% if 'image_' in field.name %}
+                            <hr>
+                            {% include "dailyinspection/field.html" with image=True %}
+                        {% endif %}
+                    {% endfor %}
+
+                    </div>
+                </div>
+
+                <div class="row" style="margin-bottom: 10px">
+                    <div class="col-xs-12">
+                        <a class="btn btn-secondary" style="width:100px;border-color: #428bca;" href="{{object.get_absolute_url}}">{% trans 'Back' %}</a>
+                        <button type="submit"  style="width:100px;" class="btn btn-primary pull-right">{% trans "submit" %}</button>
+                    </div>
+                </div>
+
+                <hr>
+
+            </form>
+        </div>
+        
+    </div>
+</div>
+
+
+{% endblock %}

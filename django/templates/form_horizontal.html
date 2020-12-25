@@ -1,0 +1,37 @@
+{% load i18n %}
+<!--overwrite base.cc-->
+<style>
+input[type=submit]#create-sumit {
+    color: #fff;
+    background-color: #428bca ;
+    background-image: none;
+    border-color: #357ebd;
+    height: 35px;
+    width: 120px;
+}
+</style>
+
+<form class="form-horizontal" {% if file %}enctype="multipart/form-data"{% endif %} method="POST" action={% if action %}{{action}}{% else %}''{% endif %} >{% csrf_token %}
+    {% if form.errors %}
+        <p style="color: #b75f33;">
+            {{form.non_field_errors}}
+        </p>
+    {% endif %}
+
+    {% for field in form %}
+        {% if field.is_hidden %}
+            <div>{{ field }}</div>
+        {% else %}
+            {% if field.errors %}<div class="error" style="color:#b75f33">{{ field.errors }}</div>{% endif %}
+            <div class="field-area form-group list-unstyled list-inline  {% if field.errors %} error has-error{% endif %}">
+                <div class="col-sm-2">
+                    {{ field.label_tag }}
+                </div>
+                <div class="col-sm-10">
+                    {{ field }} 
+                </div>
+            </div>
+        {% endif %}            
+    {% endfor %}
+    <input id="create-sumit"  type="submit" name="submit" class="btn btn-primary pull-right" value={% if submitvalue %}{{submitvalue}}{% else %}{% trans "submit" %}{% endif %} />
+</form>

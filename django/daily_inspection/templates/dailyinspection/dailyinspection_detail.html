@@ -1,0 +1,131 @@
+{% extends "base.html" %}
+{% load crispy_forms_tags %}
+{% load myform %}
+{% load i18n %}
+{% load staticfiles %}
+
+<!-- http://www.demohour.com/projects/368494 -->
+
+<style>
+{% block style %}
+.inspection-container{
+    /*background: #f8f8f8; */
+    border-radius: 5px;
+    margin-bottom: 16px; 
+    padding-bottom: 32px;
+}
+
+.subtitle .block{
+    display: block;
+    padding: 0px 12px;
+    height: 25px;
+    line-height: 25px;
+    border: solid 1px #EBEBEB;
+    font-size: 13px;
+    color: #777; /*#D2D2D2;*/
+    float: left;
+    margin-right: 8px;
+    border-radius: 5px;
+}
+
+.subtitle .block.warning{
+    background-color: red;
+    color: white;
+}
+
+.subtitle .block.green{
+    background-color: green;
+    color: white;
+}
+
+
+.content{
+    padding-top:30px;
+}
+
+.right-bar {
+    /*height: 53px;*/
+    border-bottom: solid 1px #EBEBEB;
+    padding: 20px 20px 17px 20px;
+    overflow: hidden;
+    background: #F6F6F6;
+    margin-bottom: 15px;
+    border-radius: 5px;
+}
+
+.breadcrumb{
+    margin-right:15px;
+}
+
+{% endblock %}
+</style>
+
+{% block content %}
+<div class='row'>
+    <div class='col-sm-6 col-sm-offset-3 inspection-container' >    
+        <div class="text-center caption">
+            <lead><h3>{{object.inspection_content}}</h3></lead>
+            <div class='subtitle' >
+                <div class="block" style="display:none;"><span><b>{% trans 'Create' %}</b></span> : {{object.created}} &nbsp &nbsp &nbsp</div>
+                <div class="block {% if object|my_get_field_value:'rectification_status' == 'uncompleted' %}warning{% else %}green{% endif %}"><span><b>{% trans 'Rectification Status' %}</b></span> : {{object|my_get_field_display:"rectification_status"}} &nbsp &nbsp &nbsp</div>
+            </div>
+            <div style="clear:both;"></div>
+        </div>
+        <div class="content">
+            <table class="transposition table-striped table-hover table-responsive table-condensed"  style="width: 100%">
+                <tbody>
+                    {% for field in fields %}
+                        {% if not field.name in image_fields and not field.name in fields_exclude %}
+                            {% if field.name in fields_multichoice %}
+                            <tr><th>{{field.verbose_name}}</th><td>{{object.get_impact}}</td></tr>
+                            {% elif field.name in display_fields %}
+                            <tr><th>{{field.verbose_name}}</th><td>{{object|my_get_field_display:field.name}}</td></tr>
+                            {% else %}
+                            <tr><th>{{field.verbose_name}}</th><td>{{object|my_get_field_value:field.name}}</td></tr>
+                            {% endif %}
+                        {% endif %}
+                    {% endfor %}
+                </tbody>
+            </table>
+
+            <br>
+            {% for field in fields %}
+                {% if field.name in image_fields and object|my_get_field_value:field.name %}
+                <b>{{field.verbose_name}}</b> : <img  class= 'img-responsive' src="{{ object|my_get_field_value:field.name|my_get_field_value:'url'}}"/> <br>    
+                {% endif %}
+            {% endfor %}
+            <hr>
+
+            {% if request.user.is_staff or request.user.is_superuser %}
+            <a class="btn btn-primary" style="width:100px;" href="{{object.get_absolute_url_update}}">{% trans 'Update' %}</a>
+            {% endif %}
+            <a class="btn btn-secondary" style="width:100px;border-color: #428bca;" href="{% url 'dailyinspection_list' %}">{% trans 'Back' %}</a>
+            <!-- <a href="{% url 'dailyinspection_list' %}"><button class="btn btn-secondary" style="width:100px;" >{% trans 'Back' %}</button></a> -->
+            {% if request.user.is_staff or request.user.is_superuser %}
+            <a class="btn btn-danger pull-right" style="width:100px;" href="{{object.get_absolute_url_delete}}"  >{% trans 'Delete' %}</a>
+            {% endif %}
+            <br>
+        </div>
+
+        <hr>
+
+        <div>
+            <div class="page-header">
+                <h3>{% trans "Related Logs" %} <small>rectification status</small></h3>
+            </div>
+            <ul class="list-inline">
+                {% for log in logs %}
+                <li>{{log.log}}</li>    
+                {% endfor %}
+            </ul>
+        </div>  
+    </div>
+
+    <div class='col-sm-3 '>
+        <div class="right-bar">            
+        </div>
+    </div>
+</div>
+
+
+{% endblock %}

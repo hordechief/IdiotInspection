@@ -15,14 +15,13 @@ Including another URLconf
 """
 
 
-
+from django.conf import settings
 from django.contrib.staticfiles.urls import staticfiles_urlpatterns
 
 from django.contrib import admin
-from django.urls import path
-
 
 from django.urls import path, include
+from django.conf.urls.static import static
 from django.contrib.auth.models import User
 from rest_framework import routers, serializers, viewsets
 
@@ -46,12 +45,13 @@ router.register(r'equips', EquipmentViewSet)
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path('accounts/', include('registration.backends.default.urls')),
     path('', include(router.urls)),
     path('api-auth/', include('rest_framework.urls', namespace='rest_framework')),
     path(r'equip/', include('equipments.urls')),
-    # path(r'inspection/', include('inspection.urls')),
-
+    path(r'di/', include('daily_inspection.urls')),
 ]
 
 urlpatterns += staticfiles_urlpatterns()
-
+# urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
+urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

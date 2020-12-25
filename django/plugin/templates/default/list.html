@@ -1,0 +1,46 @@
+{% extends "plugin/default/base.html" %}
+{% load i18n %}
+
+<style type="text/css">
+{% block style %}
+
+.object_list table>thead>tr>th{
+    /*width: 25%;*/
+}
+
+.object_list table>tr>th:nth-child(1){
+    /*width: 25%;*/
+}
+
+.object_list table>thead>tr>th:nth-last-child(1){
+    /*width: 10%!important;*/
+}
+
+{% endblock %}  
+</style>
+
+{% block content %}
+    {% block nav%}
+    {% endblock %}
+
+    <div class="row">
+        <div class="col-sm-12">
+            {% block content_header %}
+
+            {% comment %}
+            <div class="pull-right">
+                <a href='{% url "pi_create" %}'><i class="fa fa-plus-square-o" aria-hidden="true"> {% trans "Create PI" %}</i></a>
+                <a href='{% url "pi_list" %}'><i class="fa fa-list" aria-hidden="true"> {% trans "All" %}{% trans "PI" %}</i></a>
+                <a href="{% url 'pi_list'  %}?uncompleted=1"><i style="color:#b94a48;" class="fa fa-warning fa-1x" aria-hidden="true"><span style="color:#b94a48;">{% trans "abnormal" %}{% trans "PI" %}</span></i></a>
+                <a href="{% url 'pi_list'  %}?uncompleted=1&overdue=1"><i style="color:red;" class="fa fa-warning fa-1x" aria-hidden="true"><span style="color:red;">{% trans "abnormal" %}{% trans "overdue" %}{% trans "PI" %}</span></i></a>                              
+            </div>
+            {% endcomment %}
+
+            {% endblock %}
+        </div>
+    </div>
+
+    {% block content_table %}
+        {% include "includes/list_content.html" with line_per_page=15 %}
+    {% endblock %}
+{% endblock %}

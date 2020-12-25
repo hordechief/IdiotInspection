@@ -1,0 +1,80 @@
+
+{% load staticfiles %}
+{% load i18n %}
+
+<style type="text/css">
+
+    .foot-link{
+        border: solid 1px #f2dede;
+        border-left: none;
+        border-right:none;
+        background-color: #f8f8f8;
+        padding: 10px 0 10px 0;
+        text-align: left;
+    }
+
+    .foot-link ul{
+        list-style:none; 
+        margin:0;
+        padding:0;
+        padding-top: 1px;
+        padding-bottom: 1px;
+    }
+
+    .footer-certifiate{
+        padding: 30px 0px 30px 0px; 
+        color:#555; 
+        background-color: #d9d9d9;
+    }
+
+    .footer hr {
+    margin-top: 10px;
+    margin-bottom: 10px;
+    border: 0;
+    border-top: 1px solid #eee;
+    }
+
+    .footer .form-group {
+        margin-bottom: 5px;
+    }
+
+    .footer .form-control {
+    height: 30px!important;
+    padding: 6px 0px;
+}
+</style>
+
+
+<div class="footer container-fluid" style="margin-top:30px">
+    <div class="row foot-link" > 
+        <div class="col-sm-2 col-sm-offset-3 col-xs-4">
+            <br><p ><b>{% trans "Follow Us" %}</b></p><hr>
+            {% comment %}
+            <img  class= 'img-responsive' style=" margin:0;" src="{% static 'img/weixin.jpeg' %}"/> 
+            {% endcomment %}
+        </div>
+        <div class="col-sm-2 col-xs-4" >
+            <br><b>{% trans 'About Us' %}</b><hr>
+            <ul>
+                {% comment %}
+                <li><a href="{% url 'about' %}">{% trans 'About Us' %}</a></li>
+                <li><a href="{% url 'article_list' %}">{% trans 'Newsletter' %}</a></li>
+                {% endcomment %}
+            </ul>
+        </div>
+        <div class="col-sm-2 col-xs-3">
+            <br><b>{% trans "Tech Support" %}</b><hr>
+             {% comment %}
+            <img  class= 'img-responsive' style=" margin:0;" src="{% static 'img/yunyou.jpg' %}"/>  
+            {% endcomment %}
+        </div>
+
+        <div class="col-sm-4">
+        </div>
+    </div>
+    <div class="row  text-center footer-certifiate">
+        <div class="col-sm-12">
+            Copyright © 沪ICP备18005396号-1
+        </div>
+    </div>
+</div>

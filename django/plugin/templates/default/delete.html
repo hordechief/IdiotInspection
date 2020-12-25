@@ -1,0 +1,22 @@
+{% extends "plugin/default/base.html" %}
+{% load i18n %}
+
+{% block content %}
+<div class="row">
+    <div class="col-sm-6">
+        <form method="POST" action="">{% csrf_token %}
+            <h2>{% trans "Delete Confirm" %}?</h2>
+            <h4>{% trans "Are you sure you want to delete" %} : <small>{{object}}</small></h4> <br>
+            <button type="submit" class="btn btn-danger">{% trans "confirm" %}</button>
+            {% comment %}
+            {% if isshortcut and parent_object_back and parent_object_back.get_absolute_url %}
+                <a type="button" class="btn btn-info" href="{{parent_object_back.get_absolute_url }}"> {% trans "cancel" %} </a>
+            {% elif back_url %}<a href="{{back_url}}" class="btn btn-default">{% trans "back" %}</a>
+            {% elif object.get_absolute_url %}<a type="button" class="btn btn-info" href="{{object.get_absolute_url}}">{% trans "cancel" %} </a>
+            {% endif %}
+            {% endcomment %}
+            {% if back_url %}<a href="{{back_url}}" class="btn btn-default">{% trans "back" %}</a>{% endif %}
+        </form>
+    </div>
+</div>
+{% endblock %}

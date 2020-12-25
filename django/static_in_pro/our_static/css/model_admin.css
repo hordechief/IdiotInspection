@@ -1,0 +1,130 @@
+
+
+/* wrap set */
+#changelist table thead th {
+    word-wrap: break-word;
+    word-break: break-all;
+    white-space: normal;
+    /*overflow: auto;*/ /*hidden*/
+    text-align: center;
+}
+
+#changelist table tbody td, #changelist table tbody th {
+    word-wrap: break-word;
+    word-break: break-all;
+    white-space: normal;
+    /*overflow: auto;*/ /*hidden*/
+}
+
+#changelist table tbody th {
+    white-space: normal;
+}
+
+
+/* inline widget set */
+
+/*
+if th also set to padding 0, the height will be too tight
+*/
+#changelist table tbody td {
+    /*border-bottom: 1px solid #CCCCCC;*/
+    border-bottom: none;
+    padding:0px;
+    vertical-align: middle;
+    text-align: center;
+}
+
+#changelist table tbody th{
+    text-align: left;
+    text-indent:10px;
+}
+#changelist table tbody .row1 td input, .row1 td select{
+    /*background-color: #EDF3FE;*/
+}
+
+#changelist table tbody tr.selected td input, #changelist table tbody tr.selected td select{
+    background-color: #FFFFCC!important;
+}
+
+#changelist  table tbody td input, td select{
+    padding:0px!important;
+    margin:0px!important;
+}
+#changelist  table tbody td input[type=text],
+#changelist  table tbody td input[type=number],
+td select{
+    border-radius: 3px;
+    width:100%;
+    height: 30px;
+    /*border: 2px solid #ccc;*/
+    border: none;
+    text-indent:2px;
+    text-align: center;    
+}
+
+#changelist  table tbody td input.vDateField{
+    width:auto;
+}
+
+#changelist  input[type=checkbox]{
+    /*padding:5px 0px 0px 0px!important;*/
+}
+
+#changelist textarea.vLargeTextField{
+    max-height: 50px;
+    /*max-width: 200px;*/
+    width:95%;
+    padding:0px;
+    margin:0px;
+    text-indent:5px;
+}
+
+/*offset propeties*/
+/*left*/
+/*right*/
+/*padding*/
+/*margin*/
+/*text-indent:10px;*/
+/*overflow-x:visible;*/
+/*overflow-y:visible;*/
+
+
+/*align propeties*/
+/*position: relative;
+/*!*text-alight*!*/
+/*vertical-align*/
+
+
+
+
+
+
+/**************************************
+
+  change_form.css
+
+******************************************/
+
+/*
+body.change-form  fieldset.module:nth-child(1){
+    width: 50%;
+    float: left;
+}
+*/
+
+body.change-form  .submit-row{
+    clear:both; /* incase only one fieldset and no tables */
+}
+
+body.change-form table textarea.vLargeTextField{
+    max-height: 50px;
+    max-width: 200px;
+}
+
+body.change-form table input.vTextField{
+    max-width: 100px;
+}
+
+body.change-form table select{
+    min-width: 50px;
+}

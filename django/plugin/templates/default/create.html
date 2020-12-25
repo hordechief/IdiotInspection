@@ -1,0 +1,40 @@
+{% extends "plugin/default/base.html" %}
+{% load i18n %}
+{% load crispy_forms_tags %}
+
+<script type="text/javascript">
+{% block jquery %}
+    if("{{LANGUAGE_CODE}}" == "en"){
+        $('input.dateinput').datepicker({ dateFormat: "yy-mm-dd" });    
+    }else{
+        $('input.dateinput').datepicker({ dateFormat: "yy/mm/dd" });
+        // $('input.datetimeinput').datetimepicker({
+        //       lang:"ch",
+        //       format:"Y-m-d",
+        //       timepicker:false,
+        //       yearStart:2000,
+        //       yearEnd:2050,
+        //       todayButton:false
+        // });     
+    }    
+{% endblock %}
+</script>
+
+
+
+{% block content %}
+<div class="row">
+    <div class="{% if col_css %}{{col_css}}{% else %}col-sm-6 col-sm-offset-3{% endif %}">
+        <form enctype="multipart/form-data" method="POST" action="">{% csrf_token %}
+            {{form|crispy}}
+            <input type="submit" class="btn btn-primary"  name="submit" value = "{% trans 'Submit' %}">
+            {% comment %}
+            {% if isshortcut and parent_object_back and parent_object_back.get_absolute_url %}<a href="{{parent_object_back.get_absolute_url}}" class="btn btn-default">{% trans "back" %}</a>
+            {% elif back_url %}<a href="{{back_url}}" class="btn btn-default">{% trans "back" %}</a>
+            {% endif %}
+            {% endcomment %}
+            {% if back_url %}<a href="{{back_url}}" class="btn btn-default">{% trans "back" %}</a>{% endif %}
+        </form>
+    </div>
+</div>  
+{% endblock %}

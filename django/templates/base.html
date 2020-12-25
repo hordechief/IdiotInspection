@@ -1,0 +1,118 @@
+{% load staticfiles %}
+{% load i18n %}
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="Content-Type" content="IE=edge">
+    <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no"/>
+    <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <link rel="icon" href="{% static 'img/favicon_sinotrans.ico' %}">
+
+    <title>{% block head_title %}Idiot Inspection{% endblock %}</title>
+
+    {% block head_css_extend_before_main_css %}{% endblock %} <!-- avoid overwrite main css-->
+
+    {% include 'head_css.html' %}
+    
+    <style>
+    {% block style %}{% endblock %}
+      body {
+        /*background: #e6e6e6;*/
+        /*background: #f1f1f1;*/
+      }
+    </style>
+      
+  </head>
+
+  <body>
+
+    {% block navbar-main %}
+    {% include 'navbar.html' %}
+    {% endblock %}
+    
+    {% block nav-2nd %}
+      {# include 'navbar_2nd.html' #}
+    {% endblock %}
+
+    {% block scroll %}
+      {# include "scroll.html" #}
+    {% endblock %}
+    
+    {% block breadcrumb  %}
+    <div class="container breadcrumb-container" style="padding: 10px 0 10px 0px; ">
+        <ol class="breadcrumb" style="margin-bottom:0; background-color: white">
+        {% for breadcrumb in request.breadcrumbs %}     
+            {% if not forloop.last %}
+            <li><a href="{{ breadcrumb.url }}">{{ breadcrumb.name }}</a></li>
+            {% else %} 
+            <li class="active">{{ breadcrumb.name }}</li>
+            {% endif %}
+        {% endfor %}        
+        </ol>
+    </div>  
+    {% endblock %}
+
+    {% block messages %}
+      {% if messages %}
+      <div class='container'>
+        <div class='alert alert-success text-center alert-dismissible'>
+          <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            {% for message in messages %}
+              <div {% if message.tags %} class='{{ message.tags }}'{% endif %}>
+                {% if 'capfirst' in message.tags %}
+                {{ message|capfirst }}
+                {% else %}
+                {{ message }}
+                {% endif %}
+              </div>
+            {% endfor %}
+        </div>
+      </div>
+      {% endif %}
+    {% endblock messages %}
+
+    {% block jumbotron %}
+    {% endblock %}
+
+    {% block carousel %}  
+    {% endblock %}
+      
+    <div class="container">
+    <!-- <div class="container-fluid"> -->
+      {% block content %}
+      {% endblock %}
+    </div>
+
+    {% block footer %}
+      {% include "footer.html" %}
+    {% endblock %}
+
+    {% include "javascript.html" %}   
+
+    {% block javascript_extended %}
+    {% endblock %}
+
+    <script>
+    $(document).ready(function(){
+        {% block jquery %}
+ 
+        {% endblock %}
+    });
+    </script>
+
+    <script type="text/javascript">
+        {% block js %}
+
+        {% endblock %}    
+    </script>
+
+    {% block jswotag %} <!-- if want to include a html file, double tag will break the structure-->
+    {% endblock %}  
+
+
+  </body>
+</html>
