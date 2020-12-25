@@ -148,7 +148,11 @@ STATICFILES_DIRS = (
 )
 
 MEDIA_URL = '/media/'
-MEDIA_ROOT = os.path.join(os.path.dirname(BASE_DIR), "static_in_env", "media_root")   
+DB_SQLITE = True
+if DB_SQLITE: 
+    MEDIA_ROOT = os.path.join(BASE_DIR, "static_in_env", "media_root")
+else:
+   MEDIA_ROOT = os.path.join(os.path.dirname(BASE_DIR), "static_in_env", "media_root")   
 
 REST_FRAMEWORK = {
     # Use Django's standard `django.contrib.auth` permissions,
