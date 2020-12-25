@@ -1,5 +1,5 @@
 # -*- coding: UTF-8 -*-
-
+from __future__ import print_function
 
 class ZipUtilities:
     zip_file = None
@@ -61,23 +61,23 @@ def gen_zip_with_zipfile(path_to_zip, target_filename):
             if  len(files) == 0:
                 zif=zipfile.ZipInfo((root+'\\'))
                 f.writestr(zif,"")
-    except IOError, message:
-        print message
+    except IOError as message:
+        print(message)
         sys.exit(1)
-    except OSError, message:
-        print message
+    except OSError as message:
+        print(message)
         sys.exit(1)
-    except zipfile.BadZipfile, message:    
-        print message
+    except zipfile.BadZipfile as message:    
+        print(message)
         sys.exit(1)
     finally: 
         # f.close()
         pass
 
     if zipfile.is_zipfile(f.filename):
-        print "Successfully packing to: "+os.getcwd()+"\\"+ target_filename
+        print("Successfully packing to: "+os.getcwd()+"\\"+ target_filename)
     else:
-        print "Packing failed"
+        print("Packing failed")
 
     return f
 
@@ -89,8 +89,6 @@ if use_zip_file:
 
     tmpPath = ".\\document"
     f = gen_zip_with_zipfile(tmpPath,'abcd.zip')
-    # print f.namelist()
-    # print f.fp
     f.close()
 
 
@@ -125,7 +123,7 @@ if use_zipstream:
 ##############################################################
 use_zipstream1 = None
 if use_zipstream1:
-    from zipstream1 import ZipStream
+    from zipstream import ZipStream
     zf = open('zipfile.zip', 'wb')
     for data in ZipStream('static\\css\\inspection.css'):
         zf.write(data)

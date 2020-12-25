@@ -21,7 +21,6 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from datetime import timedelta
 
-from plugin.mixins import StaffRequiredMixin, TableListViewMixin, TableDetailViewMixin, UpdateViewMixin, CreateViewMixin
 from django.db.models.fields.related import (
     ForeignObjectRel, ManyToOneRel, OneToOneField,#add_lazy_relation,
 )
@@ -33,6 +32,7 @@ import time, datetime
 import os
 
 from plugin.var import month_choice
+from plugin.mixins import StaffRequiredMixin, TableListViewMixin, TableDetailViewMixin, UpdateViewMixin, CreateViewMixin
 
 # Create your views here.
 from .models import (

@@ -39,7 +39,7 @@
                 <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">{% trans 'Login' %} <span class="caret"></span></a>
                 <ul class="dropdown-menu" role="menu">
                   <!-- <form class='navbar-form' method='POST' action='{% url "auth_login" %}'>{% csrf_token %} -->
-                  <form class='navbar-form' method='POST' action='{% url "login" %}'>{% csrf_token %}
+                  <form class='navbar-form' method='POST' action=''>{% csrf_token %}
                     <div class='form-group'>
                         <input type='text' class='form-control' name='username' placeholder='Username' /> 
                     </div>
