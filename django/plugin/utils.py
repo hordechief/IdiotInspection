@@ -1,4 +1,4 @@
-import os
+import os, sys
 from django.core.files.storage import default_storage
 from django.db import models
 from django.db.models import FileField
@@ -259,9 +259,8 @@ def gen_csv_file(model, qs, filename, fields_display, fields_fk, fields_datetime
         for field in model._meta.get_fields():
             if field.name in excludes:
                 continue
-            row.append(field.verbose_name)
+            row.append(field.verbose_name.encode('utf8'))                       
         writer.writerow(row)
-
         for obj in qs:
             row = []
             for field in model._meta.get_fields():
@@ -285,7 +284,7 @@ def gen_csv_file(model, qs, filename, fields_display, fields_fk, fields_datetime
                         value = eval(str)
                     value = "%s" %  (value)
                     if fields_multiple and field.name in fields_multiple:
-                        row.append(value)
+                        row.append(value.encode('utf8'))
                     else:
                         row.append(value.encode('utf8'))
                 else:

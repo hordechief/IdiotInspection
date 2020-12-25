@@ -97,8 +97,13 @@ class DailyInspection(models.Model):
         ('7', _('Packing Area')),                                
         ('8', _('Forklift Charging Area')),                                
     )
- 
-    category = models.CharField(_('Category'), max_length=30, choices = daily_insepction_category, blank=False, default = 'device')
+
+    daily_insepction_trigger = (
+        ('people', 'People'),
+        ('ai', 'AI'),
+    )
+    
+    category = models.CharField(_('Category'), max_length=30, choices = daily_insepction_category, blank=False, default = 'device')    
     inspection_content = models.CharField(_('Inspection Content'), max_length=30, blank=False)
     impact = models.CharField(_('Impact'), max_length=30, blank=False)
     rectification_measures = models.TextField(_('Rectification Measures'), max_length=500, blank=False)
@@ -113,6 +118,7 @@ class DailyInspection(models.Model):
     image_after = models.ImageField(_('Picture after Rectification'), upload_to=image_upload_to_dailyinspection, blank=True, null=True)
     #warehouse = models.CharField(_('Warehouse'), max_length=30, choices = daily_insepction_warehouse, blank=False, default = '3#')
     location = models.CharField(_('Location'), max_length=30, choices = daily_insepction_location, blank=False, default = '1')
+    trigger_method = models.CharField(_('trigger method'), max_length=30, choices = daily_insepction_trigger, blank=False, default = 'people')
 
     objects = DailyInspectionManager()
     

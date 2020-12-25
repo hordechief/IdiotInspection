@@ -1,24 +1,24 @@
 from django.shortcuts import render, get_object_or_404, redirect
-from django.urls import reverse
+try:
+    from django.core.urls import reverse
+except:
+    from django.urls import reverse
 from django.views.generic.base import View, TemplateResponseMixin, ContextMixin, TemplateView
 from django.views.generic.edit import FormView, CreateView, UpdateView, DeleteView
-from django.views.generic.list import ListView
-from django.views.generic.detail import DetailView
 from django.views.generic.edit import FormMixin, ModelFormMixin
+from django.views.generic.detail import DetailView
+from django.views.generic.list import ListView
 from django.db import models
 from django.forms import models as model_forms
 from django.http import HttpResponseRedirect
 from django.conf import settings
 from django.utils.translation import ugettext as _
 from django.utils import timezone
-from django_filters import FilterSet, CharFilter, NumberFilter, BooleanFilter, MultipleChoiceFilter # MethodFilter, 
-from django.db.models import Q
 from django.http import HttpResponse, Http404
 from django.contrib import messages
 from django.core.paginator import Paginator,PageNotAnInteger, EmptyPage
-from chartjs.views.lines import (JSONView, BaseLineChartView)
-from rest_framework.views import APIView
-from rest_framework.response import Response
+from django_filters import FilterSet, CharFilter, NumberFilter, BooleanFilter, MultipleChoiceFilter # MethodFilter, 
+
 from datetime import timedelta
 
 from django.db.models.fields.related import (
@@ -27,11 +27,11 @@ from django.db.models.fields.related import (
 
 from PIL import Image
 
-import json
 import time, datetime
 import os
 
 from plugin.var import month_choice
+from plugin.qrcode import gen_qrcode
 from plugin.mixins import StaffRequiredMixin, TableListViewMixin, TableDetailViewMixin, UpdateViewMixin, CreateViewMixin
 
 # Create your views here.
@@ -46,26 +46,11 @@ from .forms import (
     InspectionFilterForm, 
     )
 
+from .charts import ChartMixin
+
+from .mixins import StatMixin  
+
 # Create your views here.
-
-def gen_qrcode(link):
-    import qrcode
-    qr=qrcode.QRCode(
-         version = 2,
-         error_correction = qrcode.constants.ERROR_CORRECT_L,
-         box_size=10,
-         border=10,)
-    qr.add_data(link)
-    qr.make(fit=True)
-    img = qr.make_image()
-    #img.show()
-
-    photopath = os.path.join(settings.MEDIA_ROOT, "inspection")
-    if not os.path.exists(photopath):
-        os.makedirs(photopath)
-    path = os.path.join(photopath, 'create.jpg')
-    img.save(path)
-    return path
 
 THUMBNAIL_WIDTH = 768 # 1024
 THUMBNAIL_HEIGHT = 725 # 1000
@@ -283,6 +268,29 @@ operators = {
     }
 '''
 
+class FilterMixin(object):
+    filter_class = None
+    search_ordering_param = "ordering"
+
+    def get_queryset(self, *args, **kwargs):
+        try:
+            qs = super(FilterMixin, self).get_queryset(*args, **kwargs)
+            return qs
+        except:
+            raise ImproperlyConfigured("You must have a queryset in order to use the FilterMixin")
+
+    def get_context_data(self, *args, **kwargs):
+        context = super(FilterMixin, self).get_context_data(*args, **kwargs)
+        qs = self.get_queryset()
+        ordering = self.request.GET.get(self.search_ordering_param, '-created')
+        if qs and ordering:
+            qs = qs.order_by(ordering)
+        filter_class = self.filter_class
+        if qs and filter_class:
+            f = filter_class(self.request.GET, queryset=qs)
+            context["object_list"] = f.qs # f also works
+            context["object_list_count"] = f.qs.count()
+        return context
 
 # From the Migrating to 2.0 guide, Filter.name renamed to Filter.field_name (#792)
 class InsepctionFilter(FilterSet):
@@ -323,55 +331,6 @@ class InsepctionFilter(FilterSet):
     #         qs = qs.filter(due_date__lt=due_date)
 
     #     return qs.distinct()
-
-class FilterMixin(object):
-    filter_class = None
-    search_ordering_param = "ordering"
-
-    def get_queryset(self, *args, **kwargs):
-        try:
-            qs = super(FilterMixin, self).get_queryset(*args, **kwargs)
-            return qs
-        except:
-            raise ImproperlyConfigured("You must have a queryset in order to use the FilterMixin")
-
-    def get_context_data(self, *args, **kwargs):
-        context = super(FilterMixin, self).get_context_data(*args, **kwargs)
-        qs = self.get_queryset()
-        ordering = self.request.GET.get(self.search_ordering_param, '-created')
-        if qs and ordering:
-            qs = qs.order_by(ordering)
-        filter_class = self.filter_class
-        if qs and filter_class:
-            f = filter_class(self.request.GET, queryset=qs)
-            context["object_list"] = f.qs # f also works
-            context["object_list_count"] = f.qs.count()
-        return context
-
-class ChartMixin(object):
-
-    def get_context_data(self, *args, **kwargs):
-        context = super(ChartMixin, self).get_context_data(*args, **kwargs)
-        object_list = context["object_list"]
-        data = { 
-            'datasets': [{
-                # 'label': '# of Votes',
-                'data': [object_list.filter(category=category[0]).count() if not object_list is None else 0 for category in DailyInspection.daily_insepction_category],
-                'backgroundColor': [
-                    'rgba(255, 0, 0, 0.2)',
-                    'rgba(0, 255, 0, 0.2)',
-                    'rgba(0, 0, 255, 0.2)',
-                    'rgba(220, 0, 255, 0.2)',
-                    'rgba(0, 220, 255, 0.2)',
-                ]            
-            }],
-
-            # These labels appear in the legend and in the tooltips when hovering different arcs
-            'labels': [_(category[1]) for category in DailyInspection.daily_insepction_category], # why ugettext in models.py didn't work?
-        };
-        context["data"] = json.dumps(data)
-        
-        return context
 
 class DailyInspectionListView(ChartMixin, FilterMixin, ListView): 
     model = DailyInspection
@@ -614,101 +573,6 @@ class DailyInspectionListView(ChartMixin, FilterMixin, ListView):
     #     ])
     #     return super(DailyInspectionListView, self).dispatch(request,args,kwargs)   
 
-# https://github.com/novafloss/django-chartjs
-class LineChartColorMixin(object):
-    def get_context_data(self):
-        data = super(LineChartColorMixin, self).get_context_data()
-        backgroundColors =[
-                    'rgba(255, 0, 0, 0.2)',
-                    'rgba(0, 255, 0, 0.2)',
-                    'rgba(0, 0, 255, 0.2)',
-                    'rgba(220, 0, 255, 0.2)',
-                    'rgba(0, 220, 255, 0.2)',                    
-                ]
-
-        borderColors =[
-                    'rgba(255, 0, 0, 0.1)',
-                    'rgba(0, 255, 0, 0.1)',
-                    'rgba(0, 0, 255, 0.1)',
-                    'rgba(220, 0, 255, 0.1)',
-                    'rgba(0, 220, 255, 0.1)',                    
-                ]                
-
-        for i in range(0,len(self.get_providers())):
-        #for i, color in enumerate(backgroundColors)
-            data['datasets'][i]['backgroundColor'] = backgroundColors[i]
-            data['datasets'][i]['borderColor'] = borderColors[i]
-
-        # print data
-        return data 
-
-class StatMixin(object):
-
-    # ['category']['date']['count']
-    # {'people',{'2017-08-01':'0','2017-08-02':'1'}}
-
-    def get_dates(self):
-        #dates = list([ ins.created.strftime("%Y-%m-%d") for ins in DailyInspection.objects.order_by('-updated')])        
-        dates = list([ ins.get_created_date() for ins in DailyInspection.objects.order_by('-updated')[:30]])
-        dates = list(set(dates))
-        dates.sort()
-        return dates
-
-    def get_dates_value(self):
-        dates = list([ ins.created for ins in DailyInspection.objects.order_by('-updated')[:30]])
-        dates = list(set(dates))
-        dates.sort()
-        return dates
-
-    def get_catetory(self):
-        categories = list([ ins[1] for ins in DailyInspection.daily_insepction_category])
-        return categories
-
-    def get_catetory_value(self):
-        categories = list([ ins[0] for ins in DailyInspection.daily_insepction_category])
-        return categories
-
-    def get_chart_counts(self):
-        counts = []
-        dates = self.get_dates()
-        categories = self.get_catetory_value()
-        for category in categories:
-            count  = [DailyInspection.objects.filter(created__range=(\
-                            datetime.datetime( datetime.datetime.strptime(date,'%Y-%m-%d').year, datetime.datetime.strptime(date,'%Y-%m-%d').month,datetime.datetime.strptime(date,'%Y-%m-%d').day,0,0,0),\
-                            datetime.datetime(datetime.datetime.strptime(date,'%Y-%m-%d').year, datetime.datetime.strptime(date,'%Y-%m-%d').month,datetime.datetime.strptime(date,'%Y-%m-%d').day,23,59,59)))\
-                                             .filter(category=category).count() for date in dates ]
-            if counts == None:
-                counts = [count]
-            else:
-                counts.append(count)
-        return counts
-
-
-    def get_counters_sorted(self):
-        llcounterperdaypercategory = {}
-        for category in self.get_catetory():
-            #llcounterperdaypercategory.update({category:{}})
-            llcounterperdaypercategory[category] = {}
-            for date in self.get_dates():
-                llcounterperdaypercategory[category].update({date:0})
-
-        return self.get_counters(llcounterperdaypercategory)
-
-    def get_counters(self, llcounterperdaypercategory):
-        #llcounterperdaypercategory = {}
-        for inspect in DailyInspection.objects.all():
-            created = inspect.get_created_date()
-            category = inspect.my_get_field_display('category')
-            if llcounterperdaypercategory.get(category, None) is None:
-                llcounterperdaypercategory.update({category: {created : 1}})
-            else:                
-                if llcounterperdaypercategory[category].get(created, None):
-                    llcounterperdaypercategory[category][created] = llcounterperdaypercategory[category].get(created, None) + 1
-                else:
-                    llcounterperdaypercategory[category].update({created:1})
-
-        return llcounterperdaypercategory
-
 
 #class ShelfInspectionStatView(TemplateView):
 class DailyInspectionStatView(StatMixin, TemplateResponseMixin, ContextMixin, View):
@@ -733,151 +597,3 @@ class DailyInspectionStatView(StatMixin, TemplateResponseMixin, ContextMixin, Vi
     #         (_('Inspection Statistic'),request.path_info),
     #     ])
     #     return super(DailyInspectionStatView, self).dispatch(request,args,kwargs)  
-
-class LineChartJSONView(StatMixin, LineChartColorMixin, BaseLineChartView):
-    def get_labels(self):
-        """Return labels for the x-axis."""
-        return self.get_dates()
-
-    def get_providers(self):
-        """Return names of datasets."""
-        return self.get_catetory()
-
-    def get_data(self):
-        """Return 3 datasets to plot."""
-        return self.get_chart_counts()
-
-
-# var data = {
-#     labels : ["January","February","March","April","May","June","July"],
-#     datasets : [
-#         {
-#             fillColor : "rgba(220,220,220,0.5)",
-#             strokeColor : "rgba(220,220,220,1)",
-#             data : [65,59,90,81,56,55,40]
-#         },
-#         {
-#             fillColor : "rgba(151,187,205,0.5)",
-#             strokeColor : "rgba(151,187,205,1)",
-#             data : [28,48,40,19,96,27,100]
-#         }
-#     ]
-# }
-
-class OverdueChartJSONView(JSONView):
-
-    def get_context_data(self):
-        data = { 
-            'datasets': [{
-                # 'label': '# of Votes',
-                'data': [DailyInspection.objects.filter(rectification_status="uncompleted", due_date__lt=timezone.now(), category=category[0]).count() for category in DailyInspection.daily_insepction_category]\
-                if self.request.user.is_staff else \
-                    [0 for category in DailyInspection.daily_insepction_category],
-                'backgroundColor': [
-                    'rgba(255, 0, 0, 0.2)',
-                    'rgba(0, 255, 0, 0.2)',
-                    'rgba(0, 0, 255, 0.2)',
-                    'rgba(220, 0, 255, 0.2)',
-                    'rgba(0, 220, 255, 0.2)',
-                ]            
-            }],
-
-            # These labels appear in the legend and in the tooltips when hovering different arcs
-            'labels': [category[1] for category in DailyInspection.daily_insepction_category],
-        };
-
-        return data
-
-class LastsChartJSONView(LineChartColorMixin, BaseLineChartView):
-    def get_time_range(self):
-        times =  [timezone.now(), timezone.now() - timedelta(weeks=1)]
-        return times
-               
-    def get_labels(self):
-        """Return labels for the x-axis."""
-        return [category[1] for category in DailyInspection.daily_insepction_category]
-
-    def get_providers(self):
-        """Return names of datasets."""
-        providers =  [ "{0}  ~  {1}".format(self.get_time_range()[1].date(), self.get_time_range()[0].date()), ]
-        return providers
-
-    def get_data(self):
-        data =  [[DailyInspection.objects.filter(category=category[0], created__gte=self.get_time_range()[1]).count()\
-                if self.request.user.is_staff else \
-                DailyInspection.objects.filter(rectification_status="completed", category=category[0], created__gte=self.get_time_range()[1]).count()\
-                     for category in DailyInspection.daily_insepction_category],]
-        return data
-
-class CompareChartJSONView(LineChartColorMixin, BaseLineChartView):
-    def get_last_times(self):
-        #  RuntimeWarning: DateTimeField DailyInspection.created received a naive datetime (2017-12-02 23:59:59) while time zone support is active.
-        year = timezone.now().year #time.localtime()[0]
-        month = timezone.now().month #time.localtime()[1]        
-        return [[month-i or 12, year if month > i else year-1] for i in reversed(range(0,1))]
-               
-    def get_labels(self):
-        """Return labels for the x-axis."""
-        return [category[1] for category in DailyInspection.daily_insepction_category]
-
-    def get_providers(self):
-        """Return names of datasets."""
-        return [            
-            "{0}-{1:0>2d}".format(year,month) for month,year in self.get_last_times()
-        ]
-
-    def get_data(self):
-        data =  [[DailyInspection.objects.filter(category=category[0], created__startswith="{0}-{1:0>2d}-".format(year,month)).count() \
-                if self.request.user.is_staff else \
-                DailyInspection.objects.filter(rectification_status="completed", category=category[0], created__startswith="{0}-{1:0>2d}-".format(year,month)).count()\
-                    for category in DailyInspection.daily_insepction_category] \
-                        for month, year in self.get_last_times()]
-        # data =  [[DailyInspection.objects.filter(category=category[0], created__year=year, created__month=month).count() for category in DailyInspection.daily_insepction_category] \
-        #             for month, year in self.get_last_times()]     
-        # issue for filter "created__month=month" # https://segmentfault.com/q/1010000009037684
-        return data
-
-
-    # function is same base class, color is different , to be improved
-    def get_context_data(self):
-        data = super(CompareChartJSONView, self).get_context_data()
-        backgroundColors =[
-                    # 'rgba(255, 0, 0, 0.2)',
-                    # 'rgba(0, 255, 0, 0.2)',
-                    'rgba(0, 0, 255, 0.2)',
-                    'rgba(220, 0, 255, 0.2)',
-                    'rgba(0, 220, 255, 0.2)',                    
-                ]
-
-        borderColors =[
-                    # 'rgba(255, 0, 0, 0.1)',
-                    # 'rgba(0, 255, 0, 0.1)',
-                    'rgba(0, 0, 255, 0.1)',
-                    'rgba(220, 0, 255, 0.1)',
-                    'rgba(0, 220, 255, 0.1)',                    
-                ]                
-
-        for i in range(0,len(self.get_providers())):
-        #for i, color in enumerate(backgroundColors)
-            data['datasets'][i]['backgroundColor'] = backgroundColors[i]
-            data['datasets'][i]['borderColor'] = borderColors[i]
-
-        return data 
-
-class DashboardViewDailyInspection(APIView):
-    authentication_classes = []
-    permission_classes = []
-
-    def get_last_times(self):
-        year = timezone.now().year #time.localtime()[0]
-        return [[i, year] for i in range(1,13)]
-
-    def get(self, request, format=None):
-        rows = [[DailyInspection.objects.filter(category=category[0], created__startswith="{0}-{1:0>2d}-".format(year,month)).count() for category in DailyInspection.daily_insepction_category] \
-                    for month, year in self.get_last_times()]
-        columns = [ (month[0], month[1]) for month in month_choice]
-        data = {
-                "columns": columns,
-                "rows": rows,
-        }
-        return Response(data)    
