@@ -1,22 +1,26 @@
 from django.db import models
- 
-from django.urls import reverse
-from django.utils.text import slugify
 from django.db.models.signals import post_delete, post_save, pre_save
-from plugin.utils import file_cleanup, file_cleanup2, save_raw_instance
+try:
+    from django.core.urls import reverse
+except:
+    from django.urls import reverse
+from django.utils.text import slugify
+from django.utils import timezone
 from django.utils.safestring import mark_safe
 from django.utils.translation import ugettext_lazy as _
 from django.utils.translation import ugettext
 from django.http import Http404
-from django.utils import timezone
-from datetime import datetime, timedelta
-from plugin.fields import ThumbnailImageField
 from django.conf import settings
-from uuslug import slugify as uuslugify
 from django.core.validators import MinValueValidator, MaxValueValidator
 from django.contrib.auth.models import User
+from datetime import datetime, timedelta
+from uuslug import slugify as uuslugify
+
+from plugin.fields import ThumbnailImageField
+from plugin.utils import file_cleanup, file_cleanup2, save_raw_instance
 
 # Create your models here.
+'''
 class InspectionMixin(models.Model):
     equipment_use_condition = [
         ('normal', _('Normal')),
@@ -38,10 +42,9 @@ RESULT_OPTION = (
     ('yes', 'Yes'),
     ('no', 'No'),
 )
-
+'''
 
 def image_upload_to_dailyinspection(instance, filename):
-
     title, file_extension = filename.split(".")
     #new_filename = "%s-%s.%s" %(instance.created.strftime('%Y-%m-%d-%H-%M-%S'), slugify(title), file_extension)
     if settings.UUSLUGIFY == True:
@@ -49,7 +52,7 @@ def image_upload_to_dailyinspection(instance, filename):
     else:
         new_filename = "%s-%s.%s" %(timezone.now().strftime('%Y%m%d%H%M%S'), title, file_extension) # created was not ready for CreateView
     full_filename = "dailyinspection/%s/%s" %(instance.category, new_filename)
-    print(full_filename)
+    #print(full_filename)
     return full_filename
 
 class DailyInspectionManager(models.Manager):
