@@ -15,7 +15,7 @@ django-registration-redux = "==2.8"
 dj-pagination = "==2.5.0"
 zipstream = "==1.1.4"
 qrcode = "==6.1"
-Django = "==2.2"
+Django = "==2.2.22"
 Pillow = "==7.2.0"
 
 [dev-packages]
