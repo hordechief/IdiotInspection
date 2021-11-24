@@ -1,0 +1,14 @@
+{
+	"folders": [
+		{
+			"path": "..\\ocp4-metal-install"
+		},
+		{
+			"path": "..\\defect-inspection\\defectinspection"
+		},
+		{
+			"path": "..\\cookbook"
+		}
+	],
+	"settings": {}
+}

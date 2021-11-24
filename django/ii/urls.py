@@ -25,6 +25,16 @@ from django.conf.urls.static import static
 from django.contrib.auth.models import User
 from rest_framework import routers, serializers, viewsets
 
+
+from django.views.decorators.csrf import csrf_exempt
+from django.http import HttpResponse
+
+@csrf_exempt
+def test(request):
+  result = request.POST.get("image")
+  print(result)
+  return HttpResponse(b"OK response")
+
 # Serializers define the API representation.
 class UserSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
@@ -50,6 +60,7 @@ urlpatterns = [
     path('api-auth/', include('rest_framework.urls', namespace='rest_framework')),
     path(r'equip/', include('equipments.urls')),
     path(r'di/', include('daily_inspection.urls')),
+    path(r'test', test),
 ]
 
 urlpatterns += staticfiles_urlpatterns()

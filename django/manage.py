@@ -5,6 +5,14 @@ import sys
 
 
 def main():
+    try:
+        apache_configuration= os.path.dirname(os.path.abspath(__file__)) 
+        project = os.path.dirname(apache_configuration)
+        sys.path.insert(0, os.path.join(project, 'env38', 'lib', 'site-packages'))
+        sys.path.append(project)
+    except:
+        pass
+        
     os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'ii.settings')
     try:
         from django.core.management import execute_from_command_line
