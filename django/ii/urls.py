@@ -29,10 +29,30 @@ from rest_framework import routers, serializers, viewsets
 from django.views.decorators.csrf import csrf_exempt
 from django.http import HttpResponse
 
+import cv2
+import base64
+import os
+import numpy as np
+
+
 @csrf_exempt
 def test(request):
-  result = request.POST.get("image")
-  print(result)
+  print(request.POST)
+  img_str = request.POST.get("image")
+  filename = request.POST.get("filename")
+  #print(img_str)
+  img_decode_ = img_str.encode('ascii')  # ascii编码
+  img_decode = base64.b64decode(img_decode_)  # base64解码
+  img_np = np.frombuffer(img_decode, np.uint8)  # 从byte数据读取为np.array形式
+  img = cv2.imdecode(img_np, cv2.COLOR_RGB2BGR)  # 转为OpenCV形式
+  fullfilename = os.path.join(settings.MEDIA_ROOT,"mci",filename)
+  print(fullfilename)
+  cv2.imwrite(fullfilename, img, [int(cv2.IMWRITE_PNG_COMPRESSION), 0])
+  cv2.imshow('img', img)
+  #cv2.imshow('img', image1)
+  cv2.waitKey()
+  cv2.destroyAllWindows()
+
   return HttpResponse(b"OK response")
 
 # Serializers define the API representation.
